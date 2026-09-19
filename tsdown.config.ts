@@ -70,6 +70,7 @@ export default [
     clean: true,
     deps: {
       neverBundle: ['schemastery', 'cordis'],
+      alwaysBundle: ['ws'],
     },
   },
   {

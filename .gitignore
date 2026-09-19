@@ -14,3 +14,11 @@ node_modules/
 # Release artifacts: tarballs are produced by build-release.yml from a tag, so
 # they are never tracked (a local `pnpm pack` drops them in the repo root).
 *.tgz
+
+.dev/declarations/
+
+# Machine-local deployment probes, receipts and rendered map previews.
+.dev/*
+!.dev/transport-browser.mjs
+!.dev/isolated-browser.mjs
+docs/project/views/

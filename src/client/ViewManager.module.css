@@ -1,0 +1,11 @@
+.manager { padding: 16px; color: var(--dsw-alias-label-primary); }
+.heading, .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.heading { margin-bottom: 12px; }
+.row { border-radius: 8px; padding: 6px; margin-bottom: 4px; }
+.row[data-active] { background: var(--dsw-alias-interactive-bg-hover); }
+.button, .select { border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.button { flex: none; width: 30px; height: 30px; border-radius: 50%; font-size: 20px; }
+.select { flex: 1; text-align: left; padding: 8px 4px; }
+.button:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover); }
+.button:disabled { opacity: .3; cursor: default; }
+.button:focus-visible, .select:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }

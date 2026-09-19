@@ -13,7 +13,7 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import {
   apply as applyConversation, inject as conversationInject,
 } from '@deepseek-ai/dsh-client-ui-conversation/client'
-import { apply, inject } from '../src/client/index.ts'
+import { apply, inject } from '../src/client/native-prototype.ts'
 import { SESSION_DRAG_TYPE } from '../src/client/session-row.ts'
 
 usePinnedBrowserLanguages('zh-CN')
@@ -46,131 +46,34 @@ async function bench() {
   return runtime
 }
 
-describe('ui-panes apply', () => {
-  it('declares only the services it uses', () => {
-    expect(inject).toEqual(['slots', 'locale', 'sessions', 'uiSession'])
-  })
 
-  it('occupies the conversation slot permanently and owns one shared pane tree', async () => {
+describe('main-view registration', () => {
+  it('keeps one main occupant without installing header actions or keyboard shortcuts', async () => {
     const runtime = await bench()
+    try {
+      await runtime.mount({ inject: [...inject], apply })
+      await runtime.flush()
+      const entry = runtime.slots.entries('main').find(e => e.options.priority === -1)!
+      expect(entry).toBeDefined()
+      const ops = entry.inject!() as unknown as { hasSplit(): boolean }
+      fireEvent.keyDown(window, { key: 'ArrowRight', ctrlKey: true, shiftKey: true })
+      expect(ops.hasSplit()).toBe(false)
+      expect(runtime.slots.entries('conversation.session.header.actions' as never)
+        .filter(e => e.options.id?.startsWith('panes-'))).toHaveLength(0)
+    } finally { await runtime.dispose() }
+  })
+  it('registers its controls when BetterSidebar arrives late and disposes registration', async () => {
+    const runtime = await bench()
+    const remove = vi.fn()
+    const registerTab = vi.fn((_descriptor: unknown) => remove)
     await runtime.mount({ inject: [...inject], apply })
     await runtime.flush()
-    // The plugin shadows the 'main' keyed slot's 'conversation' cell; the
-    // stock ConversationPanel stays on the ledger for other cells' fallback.
-    const main = runtime.slots.entries('main')
-    const panesEntry = main.find(e => {
-      const o = (e as { options?: { key?: string; priority?: number } }).options ?? {}
-      return o.key === 'conversation' && o.priority === -1
-    })
-    expect(panesEntry).toBeDefined()
-    expect(runtime.slots.entriesOfSlot('main')).toContain(panesEntry)
-
-    const splitButton = runtime.slots.entries('conversation.session.header.actions' as never)
-      .find(e => (e as { options?: { id?: string } }).options?.id === 'panes-split')
-    const entry = splitButton as unknown as { inject?: (...args: unknown[]) => Record<string, unknown> } | undefined
-    const ops = entry?.inject
-      ? entry.inject('s1') as unknown as {
-        splitFocused: (d: 'horizontal' | 'vertical') => void
-        closeFocused: () => void
-        hasSplit: () => boolean
-      }
-      : null
-    expect(ops).not.toBeNull()
-    expect(ops?.hasSplit()).toBe(false)
-    const buttons = runtime.slots.entries('conversation.session.header.actions' as never)
-      .filter(e => (e as { options: { id?: string } }).options.id?.startsWith('panes-') ?? false)
-    expect(buttons).toHaveLength(4)
-    const ids = buttons.map(e => (e as { options: { id?: string } }).options.id).sort()
-    expect(ids).toEqual(['panes-close', 'panes-fullscreen', 'panes-split', 'panes-split-v'])
-
-    runtime.sessions.open('s1' as SessionId)
-    ops!.splitFocused('horizontal')
+    expect(registerTab).not.toHaveBeenCalled()
+    runtime.ctx.provide('betterSidebar' as never, { registerTab } as never)
     await runtime.flush()
-    expect(ops!.hasSplit()).toBe(true)
-    // The first pane keeps the current selection; the new pane is a fresh
-    // new-conversation placeholder.
-    ops!.closeFocused()
-    await runtime.flush()
-    expect(ops!.hasSplit()).toBe(false)
+    expect(registerTab).toHaveBeenCalledOnce()
+    expect(registerTab.mock.calls[0]![0]).toMatchObject({ id: 'independent-main-views', title: '主窗口', single: true })
     await runtime.dispose()
-  })
-
-  it('splits and closes through the global shortcuts', async () => {
-    const runtime = await bench()
-    await runtime.mount({ inject: [...inject], apply })
-    await runtime.flush()
-    runtime.sessions.open('s1' as SessionId)
-    fireEvent.keyDown(window, { key: 'ArrowRight', ctrlKey: true, shiftKey: true })
-    await runtime.flush()
-    const splitButton = runtime.slots.entries('conversation.session.header.actions' as never)
-      .find(e => (e as { options?: { id?: string } }).options?.id === 'panes-split')
-    const ops = (splitButton as unknown as { inject: (...args: unknown[]) => { hasSplit: () => boolean } })
-      .inject('s1')
-    expect(ops.hasSplit()).toBe(true)
-    // Fullscreen toggle + Escape leaving it.
-    const fullscreenButton = runtime.slots.entries('conversation.session.header.actions' as never)
-      .find(e => (e as { options?: { id?: string } }).options?.id === 'panes-fullscreen')
-    const full = (fullscreenButton as unknown as {
-      inject: (...args: unknown[]) => { toggleFullscreen: () => void; isFullscreen: () => boolean }
-    }).inject('s1')
-    expect(full.isFullscreen()).toBe(false)
-    full.toggleFullscreen()
-    expect(full.isFullscreen()).toBe(true)
-    fireEvent.keyDown(window, { key: 'Escape' })
-    expect(full.isFullscreen()).toBe(false)
-    // Editing targets stay exempt (mod+shift+arrows select text there).
-    const input = document.createElement('input')
-    document.body.appendChild(input)
-    input.focus()
-    fireEvent.keyDown(input, { key: 'w', ctrlKey: true, shiftKey: true })
-    expect(ops.hasSplit()).toBe(true)
-    input.remove()
-    fireEvent.keyDown(window, { key: 'w', ctrlKey: true, shiftKey: true })
-    await runtime.flush()
-    expect(ops.hasSplit()).toBe(false)
-    await runtime.dispose()
-  })
-
-  it('backs the dragged session id into dataTransfer from the side-bar row DOM', async () => {
-    const runtime = await bench()
-    await runtime.mount({ inject: [...inject], apply })
-    // A draggable session row (like the side-bar's): a title cell matching a
-    // roster displayTitle resolves to that session's id on dragstart.
-    const row = document.createElement('div')
-    row.setAttribute('role', 'treeitem')
-    row.setAttribute('draggable', 'true')
-    const title = document.createElement('span')
-    title.textContent = 'Fix the build'
-    const time = document.createElement('span')
-    time.textContent = '5h'
-    row.append(title, time)
-    document.body.appendChild(row)
-    const dataTransfer = { types: [] as string[], setData: vi.fn(), getData: () => '' }
-    fireEvent.dragStart(row, { dataTransfer })
-    expect(dataTransfer.setData).toHaveBeenCalledWith(SESSION_DRAG_TYPE, 's1')
-    // A row whose title matches no roster session (e.g. a blank New Session
-    // row) writes nothing.
-    const blank = document.createElement('div')
-    blank.setAttribute('role', 'treeitem')
-    blank.setAttribute('draggable', 'true')
-    const blankTitle = document.createElement('span')
-    blankTitle.textContent = 'New Session'
-    blank.append(blankTitle)
-    document.body.appendChild(blank)
-    const dt2 = { types: [] as string[], setData: vi.fn(), getData: () => '' }
-    fireEvent.dragStart(blank, { dataTransfer: dt2 })
-    expect(dt2.setData).not.toHaveBeenCalled()
-    // Non-session drags (no treeitem row) are ignored.
-    const other = document.createElement('div')
-    other.setAttribute('draggable', 'true')
-    document.body.appendChild(other)
-    const dt3 = { types: [] as string[], setData: vi.fn(), getData: () => '' }
-    fireEvent.dragStart(other, { dataTransfer: dt3 })
-    expect(dt3.setData).not.toHaveBeenCalled()
-    // An already-populated payload (a newer side-bar) is never overwritten.
-    const dt4 = { types: [SESSION_DRAG_TYPE], setData: vi.fn(), getData: () => '' }
-    fireEvent.dragStart(row, { dataTransfer: dt4 })
-    expect(dt4.setData).not.toHaveBeenCalled()
-    await runtime.dispose()
+    expect(remove).toHaveBeenCalledOnce()
   })
 })

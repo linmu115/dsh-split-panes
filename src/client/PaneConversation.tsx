@@ -21,12 +21,14 @@ import type { HostObservable, StandardSourceBinding, StoredEntry } from '@deepse
 import { createPaneHost, paneAbsentBinding, type PaneLedger } from './pane-host.ts'
 import { ensureSessionOpen } from './pane-session.ts'
 import { createSlotRenderer } from './vendor/renderer/scoped-slots.tsx'
+import type { PaneStoreResolver } from './scoped-pane-stores.ts'
 
 /** The renderer product, created once (it is stateless between renders). */
 const RENDERER = createSlotRenderer()
 
 /** Everything a pane needs that is shared across panes of one plugin load. */
 export interface PaneRenderDeps {
+  readonly resolveStore: PaneStoreResolver
   /** Client root context (slots / uiSession / locale / sessions). */
   readonly ctx: Context
   /** Live slot ledger, type-erased. */
@@ -65,6 +67,7 @@ export const PaneConversation = memo(function PaneConversation({
   useEffect(() => { ensureSessionOpen(ctx, sessionId) }, [ctx, sessionId])
 
   const host = useMemo(() => createPaneHost({
+    resolveStore: deps.resolveStore,
     ledger: deps.ledger,
     adapter: ctx.uiSession.adapter,
     locale: ctx.locale,

@@ -1,0 +1,113 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "共享左栏如何只切换选中主窗",
+    "locale": "zh-CN",
+    "subtitle": "没有引用跨窗转发；另一个主窗保持原来的会话",
+    "viewBox": [
+      1600,
+      850
+    ]
+  },
+  "lanes": [
+    {
+      "id": "user",
+      "label": "用户界面"
+    },
+    {
+      "id": "outer",
+      "label": "本插件外层"
+    },
+    {
+      "id": "inner",
+      "label": "本插件子页面"
+    },
+    {
+      "id": "native",
+      "label": "该窗原会话服务"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "select",
+      "lane": "user",
+      "col": 0,
+      "type": "frontend",
+      "label": "选窗后选择会话",
+      "width": 175
+    },
+    {
+      "id": "route",
+      "lane": "outer",
+      "col": 1,
+      "type": "frontend",
+      "label": "确定目标与导航版本",
+      "width": 175
+    },
+    {
+      "id": "send",
+      "lane": "outer",
+      "col": 2,
+      "type": "messagebus",
+      "label": "发送本窗导航",
+      "width": 175
+    },
+    {
+      "id": "check",
+      "lane": "inner",
+      "col": 3,
+      "type": "security",
+      "label": "检查身份与版本",
+      "width": 175
+    },
+    {
+      "id": "open",
+      "lane": "native",
+      "col": 4,
+      "type": "frontend",
+      "label": "打开自己的会话",
+      "width": 175
+    },
+    {
+      "id": "report",
+      "lane": "inner",
+      "col": 5,
+      "type": "messagebus",
+      "label": "回报当前选择",
+      "width": 175
+    }
+  ],
+  "edges": [
+    {
+      "id": "flow-0",
+      "from": "select",
+      "to": "route",
+      "role": "main"
+    },
+    {
+      "id": "flow-1",
+      "from": "route",
+      "to": "send",
+      "role": "main"
+    },
+    {
+      "id": "flow-2",
+      "from": "send",
+      "to": "check",
+      "role": "main"
+    },
+    {
+      "id": "flow-3",
+      "from": "check",
+      "to": "open",
+      "role": "main"
+    },
+    {
+      "id": "flow-4",
+      "from": "open",
+      "to": "report",
+      "role": "main"
+    }
+  ]
+}

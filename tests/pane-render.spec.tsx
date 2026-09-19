@@ -15,7 +15,7 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import {
   apply as applyConversation, inject as conversationInject,
 } from '@deepseek-ai/dsh-client-ui-conversation/client'
-import { apply as applyPanes, inject as panesInject } from '../src/client/index.ts'
+import { apply as applyPanes, inject as panesInject } from '../src/client/native-prototype.ts'
 import { PANE_ROOT_SLOT_ENTRY } from '../src/client/pane-host.ts'
 
 usePinnedBrowserLanguages('zh-CN')

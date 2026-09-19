@@ -24,7 +24,7 @@ import type {
   SlotScopeAdapter, StandardSourceBinding, StoreInstanceLike,
 } from '@deepseek-ai/dsh-client-ui-slots'
 import { PaneRoot } from './PaneRoot.tsx'
-import { storeInstanceOf } from './pane-store.ts'
+import type { PaneStoreResolver } from './scoped-pane-stores.ts'
 
 /** The ledger face a pane host reads (the live SlotRegistry, type-erased). */
 export interface PaneLedger {
@@ -42,6 +42,7 @@ export interface PaneLedger {
 
 /** Options one pane host is built from. */
 export interface PaneHostOptions {
+  readonly resolveStore: PaneStoreResolver
   /** Live slot ledger. */
   readonly ledger: PaneLedger
   /** The installed session scope adapter (resolve/renderArea are reused verbatim). */
@@ -116,10 +117,10 @@ function cellOf(kind: string, entry: StoredEntry): string {
 }
 
 /** Resolve one entry store's instance for one scope key (shared with the core). */
-function storeOf(entry: StoredEntry, binding: ScopedStandardSourceBinding | undefined): StoreInstanceLike | undefined {
+function storeOf(entry: StoredEntry, binding: ScopedStandardSourceBinding | undefined, resolve: PaneStoreResolver): StoreInstanceLike | undefined {
   const handle = entry.store as unknown as { create?: (scopeKey?: string) => StoreInstanceLike } | undefined
   if (handle === undefined || typeof handle.create !== 'function') return undefined
-  return storeInstanceOf(handle, binding?.key)
+  return resolve(handle, binding?.key)
 }
 
 /**
@@ -253,7 +254,7 @@ export function createPaneHost(options: PaneHostOptions): SlotRendererHost {
       if (key === 'root') return ROOT_SPEC
       return ledger.spec(key) as never
     },
-    storeOf: (entry, scopeBinding) => storeOf(entry, scopeBinding),
+    storeOf: (entry, scopeBinding) => storeOf(entry, scopeBinding, options.resolveStore),
     root,
     scopeRevision: { getSnapshot: () => 0, subscribe: () => () => {} },
     scope: scope => (scope === 'session' || scope === 'session-maybe' ? paneScope : undefined),

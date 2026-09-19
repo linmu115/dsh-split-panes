@@ -1,7 +1,7 @@
 {
   "name": "@dsh-external/dsh-split-panes",
-  "description": "DSH split-pane conversation plugin: PiUI-style multi-pane conversation surface — split/stack panes, per-pane sessions, sidebar session drag & drop, single-row fused header. No core patch required: each pane runs the core's own slot renderer against a pane-scoped host.",
-  "version": "0.6.5",
+  "description": "Independent conversation runtimes with shared outer session navigation and the active view BetterSidebar.",
+  "version": "0.7.0-isolated.3",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -17,22 +17,24 @@
   },
   "files": [
     "lib",
-    "src",
-    "tests",
     "cordis.patch.yml",
-    "dsh.plugin.json"
+    "dsh.plugin.json",
+    "docs/LOCAL-FORK.md",
+    "docs/THIRD-PARTY-NOTICES.md"
   ],
   "scripts": {
     "build": "tsdown",
-    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.client.json",
-    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.isolated.json && tsc -p tsconfig.transport.json",
+    "test": "vitest run --config vitest.isolated.config.ts",
     "vendor:renderer": "node scripts/sync-renderer-vendor.mjs",
     "vendor:renderer:check": "node scripts/sync-renderer-vendor.mjs --check",
     "icons:sync": "node scripts/sync-icons.mjs",
     "icons:check": "node scripts/sync-icons.mjs --check",
     "upgrade:core": "node scripts/upgrade-core.mjs",
     "bundle:portable": "node scripts/check-bundle-portability.mjs",
-    "check": "pnpm run vendor:renderer:check && pnpm run icons:check && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run bundle:portable"
+    "check": "pnpm run typecheck && pnpm run test && pnpm run build && pnpm run bundle:portable",
+    "typecheck:native-diagnostic": "tsc -p tsconfig.json && tsc -p tsconfig.client.json",
+    "test:native-diagnostic": "vitest run"
   },
   "dsh": {
     "bundle": {
@@ -40,9 +42,8 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-locale",
-        "@deepseek-ai/dsh-client-ui-primitives"
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-api-session-controller"
       ],
       "platform": "web"
     }
@@ -87,7 +88,9 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/dom": "^10.4.0",
     "jsdom": "^26.0.0",
-    "vite-tsconfig-paths": "^5.1.0"
+    "vite-tsconfig-paths": "^5.1.0",
+    "ws": "8.21.3",
+    "@types/ws": "^8.18.1"
   },
   "license": "BSD-3-Clause"
 }

@@ -15,7 +15,9 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-const core = fileURLToPath(new URL('../../dsh2026/deepseek-harness/packages/client/ui-renderer/src/client/', import.meta.url))
+const core = process.env.DSH_HARNESS_SOURCE
+  ? `${process.env.DSH_HARNESS_SOURCE}/packages/client/ui-renderer/src/client/`
+  : fileURLToPath(new URL('../../dsh2026/deepseek-harness/packages/client/ui-renderer/src/client/', import.meta.url))
 const vendored = fileURLToPath(new URL('../src/client/vendor/renderer/', import.meta.url))
 
 const FILES = ['bind.ts', 'bindings.tsx', 'scoped-slots.tsx'] as const

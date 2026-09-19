@@ -23,7 +23,8 @@ import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PLUGIN_ROOT = resolve(HERE, '..')
-const CORE = resolve(PLUGIN_ROOT, '../dsh2026/deepseek-harness/packages/client/ui-renderer/src/client')
+const CORE_ROOT = process.env.DSH_HARNESS_SOURCE ?? resolve(PLUGIN_ROOT, '../dsh2026/deepseek-harness')
+const CORE = resolve(CORE_ROOT, 'packages/client/ui-renderer/src/client')
 const OUT = join(PLUGIN_ROOT, 'src/client/vendor/renderer')
 
 /** Files copied verbatim from the core renderer. */

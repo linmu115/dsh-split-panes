@@ -1,6 +1,10 @@
+> 本分支为 **0.7.0-isolated.3 独立会话视图版**，已在 DSH 0.1.5-rc.2 副本安装并完成双窗与布局检查。引用、贴纸完整业务仍未验收。当前设计与范围见 [本地说明](docs/LOCAL-FORK.md) 和 [项目地图](docs/project/map.md)。
+
 [![dshfind](https://dshfind.com/api/card/lehhair/dsh-split-panes?lang=zh)](https://dshfind.com/zh/plugins/lehhair/dsh-split-panes?ref=badge)
 
 # dsh-split-panes
+
+> 下方为上游 0.6.5 的历史说明；其中同文档渲染器、多向分屏与快捷键不代表本分支当前入口。
 
 DSH 对话分屏插件（PiUI 风格）：把信息流分成多个可独立操作的窗格，每个窗格绑定自己的会话——分屏/层叠、四向拖拽分配、侧边栏会话拖入。**每个窗格都跑核心自己的渲染器**，插件只提供容器、焦点路由与交互。
 

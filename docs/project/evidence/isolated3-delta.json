@@ -1,0 +1,302 @@
+{
+  "baseline": "ccbbf06d414df233744fb1f776f54fb47465ac17",
+  "version": "0.7.0-isolated.3",
+  "scope": "staged implementation and documentation outside project map; historical initial snapshot retained separately",
+  "files": [
+    {
+      "path": ".dev/isolated-browser.mjs",
+      "status": "A",
+      "sha256": "4f33a369d51e3b56086e985dedaadfc795c71f4cf7da717d082a5641a19e4add"
+    },
+    {
+      "path": ".dev/transport-browser.mjs",
+      "status": "A",
+      "sha256": "904a1d0e146f673beef1046f03245348e777578da4d74b8c5c052cefb4e86f29"
+    },
+    {
+      "path": ".gitignore",
+      "status": "M",
+      "sha256": "06a8789e5ae335acfbfb52436a406dd0015a16153d0e60c2a4a1dee08ab2e70b"
+    },
+    {
+      "path": "README.md",
+      "status": "M",
+      "sha256": "cb7e4fea29eba8f16d40254c080753db55e5510f3bb1c1ca984e0e6a377889ec"
+    },
+    {
+      "path": "docs/LOCAL-FORK.md",
+      "status": "A",
+      "sha256": "17cd5a32934b26415436e86c86f1fcd7dc0c0db6d0da4b56eb34216fa1382992"
+    },
+    {
+      "path": "docs/THIRD-PARTY-NOTICES.md",
+      "status": "A",
+      "sha256": "b559bda9eae27d6e338c90f6f9bd5d964ddc9ae974df97f195d6c625badc7add"
+    },
+    {
+      "path": "dsh.plugin.json",
+      "status": "M",
+      "sha256": "45552e201c34cd15c781d811caef8e801ec58ddbfeb4c8fdc3148f83767bae74"
+    },
+    {
+      "path": "lib/client.js",
+      "status": "M",
+      "sha256": "34dfbf549a28387ba654951d4e8e16ac7b38c6a05301ab340b04e1ce2674c886"
+    },
+    {
+      "path": "lib/index.d.ts",
+      "status": "M",
+      "sha256": "ff8782c6aa394995c5115700f944a064b0efb82d2921826cc25c425d4f8088e0"
+    },
+    {
+      "path": "lib/index.js",
+      "status": "M",
+      "sha256": "30d80dd5fece85e7d8aef04e1d7ecedd74f030cc2dd613db4b735c1c11f7562e"
+    },
+    {
+      "path": "package.json",
+      "status": "M",
+      "sha256": "b40f2e746c591dd0b67421d654ee4fb0e77b177c5c9fab63998117957d64d047"
+    },
+    {
+      "path": "scripts/sync-renderer-vendor.mjs",
+      "status": "M",
+      "sha256": "fc789f715121a17151f632db5a526e5fd38b26267bfe95525499907347957add"
+    },
+    {
+      "path": "scripts/typecheck-local.mjs",
+      "status": "A",
+      "sha256": "396a20a8dbca078eccdb0b9b157fa28256bbe9addd683bdf5c914ac19cc5070c"
+    },
+    {
+      "path": "src/client/ClosePaneButton.tsx",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "src/client/FullscreenPaneButton.tsx",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "src/client/PaneConversation.tsx",
+      "status": "M",
+      "sha256": "ee3414b397601caf4c0bd4c0d78ee986174d26d55c376974637195e677c73d74"
+    },
+    {
+      "path": "src/client/PaneWorkspace.module.css",
+      "status": "M",
+      "sha256": "8958bd21a110b9101e319e3a95fb8bc93481a28757e35205b5489afecb9a9163"
+    },
+    {
+      "path": "src/client/PaneWorkspace.tsx",
+      "status": "M",
+      "sha256": "0d094e20a5522599e46dbad01d08518523b932cb799eefccecb45dbd25738812"
+    },
+    {
+      "path": "src/client/SplitContainer.module.css",
+      "status": "M",
+      "sha256": "30ff0d541d122d727e9b60afb85c142f3d16185cc8678f071dec8d42cbd86996"
+    },
+    {
+      "path": "src/client/SplitPaneButton.tsx",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "src/client/SplitVerticalButton.tsx",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "src/client/ViewManager.module.css",
+      "status": "A",
+      "sha256": "6390a4fd91f8a45880858f79f25310e3b4379b4c41c3960a130db334d8674aa7"
+    },
+    {
+      "path": "src/client/ViewManager.tsx",
+      "status": "A",
+      "sha256": "369a347e1a571198e6505300b715c79c7e6bd0405d4d1aec7a6d928fb07e5798"
+    },
+    {
+      "path": "src/client/index.ts",
+      "status": "M",
+      "sha256": "aa55384cfb71df72611ecb6d858869e893e62a5d231d4a96fc56fa3eafe0d5ec"
+    },
+    {
+      "path": "src/client/isolated/Workspace.tsx",
+      "status": "A",
+      "sha256": "526aaa8a889f21a70e55362b3eba19049da69ddc6a487ee531636aa044228de8"
+    },
+    {
+      "path": "src/client/isolated/child.tsx",
+      "status": "A",
+      "sha256": "1e0edc1e005d6b93a2137d1dc1faa313e9d9e25423a819042ed49e4383a75474"
+    },
+    {
+      "path": "src/client/isolated/contracts.ts",
+      "status": "A",
+      "sha256": "0d628d4c014e8014448b0ef48a7ede93628ac2f1ab043dec28fe125e0524735d"
+    },
+    {
+      "path": "src/client/isolated/focus.ts",
+      "status": "A",
+      "sha256": "318a6e00608dbd81fdffa580f2b6ecca18fbd5cb1f643556d023f4c73cceb4c4"
+    },
+    {
+      "path": "src/client/isolated/layout.ts",
+      "status": "A",
+      "sha256": "8fd715717a49f3cb82797ed55c0870a1af1c85a6190457fe6e68fc379a4b5174"
+    },
+    {
+      "path": "src/client/isolated/model.ts",
+      "status": "A",
+      "sha256": "00804ec38f6efab4049d0325cf445083d10d324e7575511576b44bd1c2baf74d"
+    },
+    {
+      "path": "src/client/isolated/protocol.ts",
+      "status": "A",
+      "sha256": "6454b2a83444295f59ed3102a29acb3f1f065915d18c6714d6a1455f45d8f801"
+    },
+    {
+      "path": "src/client/isolated/shell.ts",
+      "status": "A",
+      "sha256": "8fb1148fe8f3c902b685f3a783f0c03354086f980698e5066305ba8bd28a2f35"
+    },
+    {
+      "path": "src/client/isolated/surface.tsx",
+      "status": "A",
+      "sha256": "cf07a0653edf0ca8648dadc7f4c982a117dd15bc2041fc92cce3a8a18c665f9d"
+    },
+    {
+      "path": "src/client/isolated/workspace.module.css",
+      "status": "A",
+      "sha256": "8c9af876560e29cf162ca2f7275b207b3ee41ffc5650c4c83af2f4213c2ceef6"
+    },
+    {
+      "path": "src/client/native-prototype.ts",
+      "status": "A",
+      "sha256": "4d8eaaa40e69882661ed5ea29f2da5130565ea6f911983915da54a0924c3aa85"
+    },
+    {
+      "path": "src/client/pane-host.ts",
+      "status": "M",
+      "sha256": "da18433b747a07517dbe8669bf72c7833ab27be7391036109627d3dd374122c7"
+    },
+    {
+      "path": "src/client/pane-store.ts",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "src/client/scoped-pane-stores.ts",
+      "status": "A",
+      "sha256": "15790e5480b7e3db600b31b7386e3c1d1a53cf36408a7fc26883c6b7752ebfe1"
+    },
+    {
+      "path": "src/client/view-controller.ts",
+      "status": "A",
+      "sha256": "f972d31c6405d769df9e7ef2f34e72dbb965b910566c1bdf7f3ef69a15709f8d"
+    },
+    {
+      "path": "src/index.ts",
+      "status": "M",
+      "sha256": "4f19e2757290360fa0a11ceb29ed665ae27eece373e709cece861205e09e46e7"
+    },
+    {
+      "path": "src/transport/browser.d.ts",
+      "status": "A",
+      "sha256": "d401b59eb278cf50f93fafbb971b831ba9135615fe94f40fe3c4e1885163f39d"
+    },
+    {
+      "path": "src/transport/browser.js",
+      "status": "A",
+      "sha256": "5ef8f7a623bed9d14c86cc0a6e932f03de08e24e1339fafcfb85838dacf8130f"
+    },
+    {
+      "path": "src/transport/server.ts",
+      "status": "A",
+      "sha256": "dd89829ef865efedf20cd867f46a89c9f2d491e20f014850aadda79f45fe3922"
+    },
+    {
+      "path": "tests/apply.spec.tsx",
+      "status": "M",
+      "sha256": "4ca8b88f2ee2edf59afd15193c522c52b175fbf138fbbd6cc10cfeb0a0514c44"
+    },
+    {
+      "path": "tests/isolated.spec.ts",
+      "status": "A",
+      "sha256": "bc78a3a578b3c1e08dd9f3d5e3c9ef5f5870759908c47cb072b9dbb48fd2fa59"
+    },
+    {
+      "path": "tests/pane-chrome.spec.ts",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "tests/pane-render.spec.tsx",
+      "status": "M",
+      "sha256": "4e92bf4278714a1ecb3fcd835b67813ad2f11444d8eb9eebeea2a11a03a2bd30"
+    },
+    {
+      "path": "tests/pane-store.spec.ts",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "tests/pane-workspace.spec.tsx",
+      "status": "M",
+      "sha256": "6c0323a79ab880f4cf57a5d118837c25a3e3030c598e4b53d13f66d924f090ae"
+    },
+    {
+      "path": "tests/reference-compatibility.spec.tsx",
+      "status": "A",
+      "sha256": "ec27216a61d596fdb5d7e7ec8ac8f85c18eed1c2f3740482a162ac677acafaf2"
+    },
+    {
+      "path": "tests/renderer-vendor.spec.ts",
+      "status": "M",
+      "sha256": "d92df73e4a7fd1721f28279e1a0d8cd3e67fb138f641266e46a99c5c3c20e1dc"
+    },
+    {
+      "path": "tests/scoped-pane-stores.spec.ts",
+      "status": "A",
+      "sha256": "701bded5767fe0ab7ada886247ef59bb4a2748f3f548b78504067f4339530ed6"
+    },
+    {
+      "path": "tests/split-pane-button.spec.tsx",
+      "status": "D",
+      "sha256": null
+    },
+    {
+      "path": "tests/view-controller.spec.ts",
+      "status": "A",
+      "sha256": "585feb2b34ba76cc3fe989aa308c401d5b9353d5db5a6ee426a579b6ed33458e"
+    },
+    {
+      "path": "tsconfig.isolated.json",
+      "status": "A",
+      "sha256": "d4cd63550abbc3d1c5d5a5a877818a81230f36bcb76a62d15d68426f197ec87f"
+    },
+    {
+      "path": "tsconfig.transport.json",
+      "status": "A",
+      "sha256": "f8a5b9a0956b37e53f2047117bfea6fa2b82a92c38fa691010f555356fc4c0a9"
+    },
+    {
+      "path": "tsdown.config.ts",
+      "status": "M",
+      "sha256": "ce62f386cda343351e229a628498480024d092cd707d1f739a213dc1deb3df2b"
+    },
+    {
+      "path": "vitest.config.ts",
+      "status": "M",
+      "sha256": "a0edaf2787a48bc47995d0f786778d4105eaab58759c2589a41126a331337598"
+    },
+    {
+      "path": "vitest.isolated.config.ts",
+      "status": "A",
+      "sha256": "db495236c09bf67db5aee034393cc252852d7ffeafdf95b90b888989810d4f25"
+    }
+  ]
+}

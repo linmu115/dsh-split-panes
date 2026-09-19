@@ -1,4 +1,7 @@
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
+import { dirname } from 'node:path'
+import { realpathSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
 
 /** DSH workspace sources: the linked packages' `./client` exports point at
@@ -6,12 +9,15 @@ import { defineConfig } from 'vitest/config'
     the workspace src instead (see tsconfig.json `paths`, which maps every
     @deepseek-ai dependency to the core checkout's sources). Vite resolves
     tsconfig paths natively (resolve.tsconfigPaths). */
-const core = fileURLToPath(new URL('../dsh2026/deepseek-harness', import.meta.url))
+const core = (process.env.DSH_HARNESS_SOURCE ?? fileURLToPath(new URL('../dsh2026/deepseek-harness', import.meta.url))).replace(/\\/g, '/')
+const testRequire = createRequire(realpathSync(`${core}/node_modules/@testing-library/react/package.json`))
+const rendererRequire = createRequire(`${core}/packages/client/ui-renderer/package.json`)
 
 export default defineConfig({
   test: {
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.tsx'],
     environment: 'node',
+    exclude: process.env.DSH_ANNOTATION_SOURCE ? [] : ['tests/reference-compatibility.spec.tsx'],
     pool: 'threads',
   },
   resolve: {
@@ -22,6 +28,11 @@ export default defineConfig({
     // null (reading 'useEffect')").
     dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
     alias: {
+      ...(process.env.DSH_ANNOTATION_SOURCE ? { '@local-annotation': process.env.DSH_ANNOTATION_SOURCE.replace(/\\/g, '/') + '/src' } : {}),
+      'react': dirname(testRequire.resolve('react/package.json')).replace(/\\/g, '/'),
+      'react-dom': dirname(testRequire.resolve('react-dom/package.json')).replace(/\\/g, '/'),
+      '@testing-library/react': `${core}/node_modules/@testing-library/react/dist/index.js`,
+      'use-sync-external-store': dirname(rendererRequire.resolve('use-sync-external-store/package.json')).replace(/\\/g, '/'),
       // Symmetric with tsconfig.json paths (Vite reads the project tsconfig,
       // but keep the explicit form as the authoritative source).
       '@deepseek-ai/cordis': `${core}/vendor/cordis/src`,

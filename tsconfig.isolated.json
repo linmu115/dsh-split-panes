@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "lib": ["ES2023", "DOM", "DOM.Iterable"] },
+  "include": ["src/client/index.ts", "src/client/isolated", "src/css-modules.d.ts"],
+  "exclude": []
+}

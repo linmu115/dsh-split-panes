@@ -1,0 +1,2 @@
+# Preserve source-reference ledger fingerprints on Windows checkouts.
+docs/project/history/** -text whitespace=cr-at-eol

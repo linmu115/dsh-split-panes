@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "独立主窗口：当前生效结构",
+    "subtitle": "0.7.0-isolated.3：双窗与布局真实检查通过，完整引用和贴纸业务未验收",
+    "locale": "zh-CN"
+  },
+  "layout": {
+    "mode": "grid",
+    "cols": 3,
+    "cellW": 300,
+    "cellH": 84,
+    "gapX": 95,
+    "gapY": 105,
+    "origin": [
+      70,
+      80
+    ]
+  },
+  "components": [
+    {
+      "id": "shell",
+      "type": "frontend",
+      "label": "外层导航",
+      "sublabel": "左栏选择 → 当前窗口",
+      "row": 0,
+      "col": 0,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "model",
+      "type": "frontend",
+      "label": "窗口状态",
+      "sublabel": "id / active / revision / ratio",
+      "row": 0,
+      "col": 1,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "surface",
+      "type": "frontend",
+      "label": "持续承载面",
+      "sublabel": "稳定 iframe · 拖动分隔线",
+      "row": 0,
+      "col": 2,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "channel",
+      "type": "frontend",
+      "label": "窗口消息通道",
+      "sublabel": "选择、尺寸与状态；无业务正文",
+      "row": 1,
+      "col": 1,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "child",
+      "type": "frontend",
+      "label": "子页面控制",
+      "sublabel": "每窗自己的 sessions",
+      "row": 2,
+      "col": 0,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "native",
+      "type": "frontend",
+      "label": "原生会话与插件",
+      "sublabel": "独立 document · 原代码运行",
+      "row": 2,
+      "col": 1,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "sidebar",
+      "type": "frontend",
+      "label": "该窗 BetterSidebar",
+      "sublabel": "仅选中窗的侧栏显示在最右",
+      "row": 2,
+      "col": 2,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "focus",
+      "type": "frontend",
+      "label": "嵌套页面焦点",
+      "sublabel": "同源 iframe 事件监听",
+      "row": 3,
+      "col": 0,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "backend",
+      "type": "backend",
+      "label": "共享 DSH 后端",
+      "sublabel": "原会话与业务数据不复制",
+      "row": 4,
+      "col": 1,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "transport",
+      "type": "backend",
+      "label": "独立事件流承载",
+      "sublabel": "子页 EventSource → WS → 原 SSE",
+      "row": 3,
+      "col": 2,
+      "size": [
+        260,
+        90
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "外层页面：本插件控制与共享左栏",
+      "wraps": [
+        "shell",
+        "model",
+        "surface"
+      ],
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "独立子页面：每个主窗一份运行环境",
+      "wraps": [
+        "child",
+        "native",
+        "sidebar"
+      ],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    {
+      "id": "edge-0",
+      "to": "model",
+      "label": "选中目标",
+      "from": "shell"
+    },
+    {
+      "id": "edge-1",
+      "to": "surface",
+      "label": "视图与几何",
+      "from": "model"
+    },
+    {
+      "id": "edge-2",
+      "to": "channel",
+      "label": "navigate",
+      "from": "shell"
+    },
+    {
+      "id": "edge-3",
+      "to": "child",
+      "label": "身份与版本校验",
+      "from": "channel"
+    },
+    {
+      "id": "edge-4",
+      "to": "native",
+      "label": "本窗选择",
+      "from": "child",
+      "labelAt": [
+        417,
+        533
+      ]
+    },
+    {
+      "id": "edge-5",
+      "to": "sidebar",
+      "label": "现有服务注册",
+      "from": "child",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [
+          200,
+          417
+        ],
+        [
+          990,
+          417
+        ]
+      ],
+      "labelAt": [
+        790,
+        400
+      ]
+    },
+    {
+      "id": "edge-6",
+      "to": "child",
+      "label": "所属窗聚焦",
+      "from": "focus"
+    },
+    {
+      "id": "edge-7",
+      "to": "backend",
+      "label": "原有业务访问",
+      "from": "native",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        675,
+        600
+      ]
+    },
+    {
+      "id": "edge-transport-in",
+      "from": "native",
+      "to": "transport",
+      "label": "每条流独立连接"
+    },
+    {
+      "id": "edge-transport-out",
+      "from": "transport",
+      "to": "backend",
+      "label": "原端点鉴权"
+    }
+  ]
+}

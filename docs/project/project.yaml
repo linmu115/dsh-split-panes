@@ -1,0 +1,98 @@
+{
+  "schema": "project-map/v1",
+  "project_id": "5f70217b-f932-4b45-856a-5d271de7c9ed",
+  "name": "dsh-split-panes",
+  "kind": "software",
+  "map": "map.md",
+  "sources": [
+    {
+      "source_id": "local-fork",
+      "path": "../LOCAL-FORK.md",
+      "format": "markdown"
+    },
+    {
+      "source_id": "upstream-design",
+      "path": "../ARCHITECTURE.md",
+      "format": "markdown"
+    }
+  ],
+  "bindings": [
+    {
+      "id": "SRC-fork-baseline",
+      "kind": "decision",
+      "title": "既有本地说明：来源与选择",
+      "source_id": "local-fork",
+      "heading": "来源与选择",
+      "status": "current"
+    },
+    {
+      "id": "SRC-upstream-design",
+      "kind": "exploration",
+      "title": "上游历史设计：vendor 渲染器选择",
+      "source_id": "upstream-design",
+      "heading": "3. 方案选择",
+      "status": "superseded"
+    }
+  ],
+  "archify": {
+    "architecture": {
+      "source": "diagrams/architecture.json",
+      "node_records": {
+        "shell": [
+          "MOD-shell"
+        ],
+        "model": [
+          "OBJ-view"
+        ],
+        "surface": [
+          "MOD-surface"
+        ],
+        "channel": [
+          "IF-view-channel"
+        ],
+        "child": [
+          "MOD-child"
+        ],
+        "native": [
+          "DEC-isolation",
+          "VER-isolated"
+        ],
+        "sidebar": [
+          "IF-sidebar-use"
+        ],
+        "focus": [
+          "MOD-child"
+        ],
+        "backend": [
+          "OBJ-view"
+        ],
+        "transport": [
+          "MOD-event-transport"
+        ]
+      }
+    },
+    "workflow": {
+      "source": "diagrams/workflow.json",
+      "node_records": {
+        "select": [
+          "REQ-mainviews"
+        ],
+        "route": [
+          "MOD-shell"
+        ],
+        "send": [
+          "IF-view-channel"
+        ],
+        "check": [
+          "MOD-child"
+        ],
+        "open": [
+          "IF-sidebar-use"
+        ],
+        "report": [
+          "MOD-shell"
+        ]
+      }
+    }
+  }
+}

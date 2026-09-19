@@ -1,0 +1,306 @@
+{
+  "baseline": "ccbbf06d414df233744fb1f776f54fb47465ac17",
+  "scope": "worktree before project-map documentation",
+  "files": [
+    {
+      "path": ".dev/isolated-browser-result.json",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "f3582de41259aca55ed307fe2670deae160efffa0054aa12c7d3470e613ab750"
+    },
+    {
+      "path": ".dev/isolated-browser.mjs",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "4f33a369d51e3b56086e985dedaadfc795c71f4cf7da717d082a5641a19e4add"
+    },
+    {
+      "path": ".gitignore",
+      "status": "M",
+      "category": "清单/说明",
+      "sha256": "4143e6059882c2524690e904fa0eef9ee552461a2830fab001009590f01fe02a"
+    },
+    {
+      "path": "README.md",
+      "status": "M",
+      "category": "清单/说明",
+      "sha256": "ad15b5c25ac302a3c0e8d6bc6699799690ab441f70f04cf82b44156ffffd44ec"
+    },
+    {
+      "path": "docs/LOCAL-FORK.md",
+      "status": "A (untracked)",
+      "category": "清单/说明",
+      "sha256": "27378a87865a0f07f2e026b73d5188c12606f0edd390642455ed2b7ef8d875b5"
+    },
+    {
+      "path": "dsh.plugin.json",
+      "status": "M",
+      "category": "清单/说明",
+      "sha256": "c06ac9f118b1bd26702ddfd1bb9589f9f57292e7e416e29b00d9675bbc23538c"
+    },
+    {
+      "path": "lib/client.js",
+      "status": "M",
+      "category": "当前发行产物",
+      "sha256": "e009cf3df2c19dd4505b0fd2baa1e25c2a11b5055be1d4a7687ca84460d74ed9"
+    },
+    {
+      "path": "package.json",
+      "status": "M",
+      "category": "清单/说明",
+      "sha256": "34fb83562bb750c6e5e663993e2f9691a4574a282220c16beeb378f5fcf46d04"
+    },
+    {
+      "path": "scripts/sync-renderer-vendor.mjs",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "fc789f715121a17151f632db5a526e5fd38b26267bfe95525499907347957add"
+    },
+    {
+      "path": "scripts/typecheck-local.mjs",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "396a20a8dbca078eccdb0b9b157fa28256bbe9addd683bdf5c914ac19cc5070c"
+    },
+    {
+      "path": "src/client/ClosePaneButton.tsx",
+      "status": "D",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": null
+    },
+    {
+      "path": "src/client/FullscreenPaneButton.tsx",
+      "status": "D",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": null
+    },
+    {
+      "path": "src/client/PaneConversation.tsx",
+      "status": "M",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "ee3414b397601caf4c0bd4c0d78ee986174d26d55c376974637195e677c73d74"
+    },
+    {
+      "path": "src/client/PaneWorkspace.module.css",
+      "status": "M",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "8958bd21a110b9101e319e3a95fb8bc93481a28757e35205b5489afecb9a9163"
+    },
+    {
+      "path": "src/client/PaneWorkspace.tsx",
+      "status": "M",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "0d094e20a5522599e46dbad01d08518523b932cb799eefccecb45dbd25738812"
+    },
+    {
+      "path": "src/client/SplitContainer.module.css",
+      "status": "M",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "30ff0d541d122d727e9b60afb85c142f3d16185cc8678f071dec8d42cbd86996"
+    },
+    {
+      "path": "src/client/SplitPaneButton.tsx",
+      "status": "D",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": null
+    },
+    {
+      "path": "src/client/SplitVerticalButton.tsx",
+      "status": "D",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": null
+    },
+    {
+      "path": "src/client/ViewManager.module.css",
+      "status": "A (untracked)",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "6390a4fd91f8a45880858f79f25310e3b4379b4c41c3960a130db334d8674aa7"
+    },
+    {
+      "path": "src/client/ViewManager.tsx",
+      "status": "A (untracked)",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "369a347e1a571198e6505300b715c79c7e6bd0405d4d1aec7a6d928fb07e5798"
+    },
+    {
+      "path": "src/client/index.ts",
+      "status": "M",
+      "category": "当前隔离入口",
+      "sha256": "aa55384cfb71df72611ecb6d858869e893e62a5d231d4a96fc56fa3eafe0d5ec"
+    },
+    {
+      "path": "src/client/isolated/Workspace.tsx",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "526aaa8a889f21a70e55362b3eba19049da69ddc6a487ee531636aa044228de8"
+    },
+    {
+      "path": "src/client/isolated/child.tsx",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "348688b526762fd31fb7b487b025e2ab75b561a83cce2571b0553a8c0053c8b0"
+    },
+    {
+      "path": "src/client/isolated/contracts.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "0d628d4c014e8014448b0ef48a7ede93628ac2f1ab043dec28fe125e0524735d"
+    },
+    {
+      "path": "src/client/isolated/focus.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "318a6e00608dbd81fdffa580f2b6ecca18fbd5cb1f643556d023f4c73cceb4c4"
+    },
+    {
+      "path": "src/client/isolated/layout.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "40399bfc07d2e93ecf2e0a51ffc3c98a16b996e45f3e618396a136d0aa0dde3c"
+    },
+    {
+      "path": "src/client/isolated/model.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "00804ec38f6efab4049d0325cf445083d10d324e7575511576b44bd1c2baf74d"
+    },
+    {
+      "path": "src/client/isolated/protocol.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "6454b2a83444295f59ed3102a29acb3f1f065915d18c6714d6a1455f45d8f801"
+    },
+    {
+      "path": "src/client/isolated/shell.ts",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "8fb1148fe8f3c902b685f3a783f0c03354086f980698e5066305ba8bd28a2f35"
+    },
+    {
+      "path": "src/client/isolated/surface.tsx",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "cf07a0653edf0ca8648dadc7f4c982a117dd15bc2041fc92cce3a8a18c665f9d"
+    },
+    {
+      "path": "src/client/isolated/workspace.module.css",
+      "status": "A (untracked)",
+      "category": "当前隔离入口",
+      "sha256": "8c9af876560e29cf162ca2f7275b207b3ee41ffc5650c4c83af2f4213c2ceef6"
+    },
+    {
+      "path": "src/client/native-prototype.ts",
+      "status": "A (untracked)",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "4d8eaaa40e69882661ed5ea29f2da5130565ea6f911983915da54a0924c3aa85"
+    },
+    {
+      "path": "src/client/pane-host.ts",
+      "status": "M",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "da18433b747a07517dbe8669bf72c7833ab27be7391036109627d3dd374122c7"
+    },
+    {
+      "path": "src/client/pane-store.ts",
+      "status": "D",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": null
+    },
+    {
+      "path": "src/client/scoped-pane-stores.ts",
+      "status": "A (untracked)",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "15790e5480b7e3db600b31b7386e3c1d1a53cf36408a7fc26883c6b7752ebfe1"
+    },
+    {
+      "path": "src/client/view-controller.ts",
+      "status": "A (untracked)",
+      "category": "旧同文档路线/遗留资产",
+      "sha256": "f972d31c6405d769df9e7ef2f34e72dbb965b910566c1bdf7f3ef69a15709f8d"
+    },
+    {
+      "path": "tests/apply.spec.tsx",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "4ca8b88f2ee2edf59afd15193c522c52b175fbf138fbbd6cc10cfeb0a0514c44"
+    },
+    {
+      "path": "tests/isolated.spec.ts",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "bc78a3a578b3c1e08dd9f3d5e3c9ef5f5870759908c47cb072b9dbb48fd2fa59"
+    },
+    {
+      "path": "tests/pane-chrome.spec.ts",
+      "status": "D",
+      "category": "构建/验证与诊断",
+      "sha256": null
+    },
+    {
+      "path": "tests/pane-render.spec.tsx",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "4e92bf4278714a1ecb3fcd835b67813ad2f11444d8eb9eebeea2a11a03a2bd30"
+    },
+    {
+      "path": "tests/pane-store.spec.ts",
+      "status": "D",
+      "category": "构建/验证与诊断",
+      "sha256": null
+    },
+    {
+      "path": "tests/pane-workspace.spec.tsx",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "6c0323a79ab880f4cf57a5d118837c25a3e3030c598e4b53d13f66d924f090ae"
+    },
+    {
+      "path": "tests/reference-compatibility.spec.tsx",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "ec27216a61d596fdb5d7e7ec8ac8f85c18eed1c2f3740482a162ac677acafaf2"
+    },
+    {
+      "path": "tests/renderer-vendor.spec.ts",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "d92df73e4a7fd1721f28279e1a0d8cd3e67fb138f641266e46a99c5c3c20e1dc"
+    },
+    {
+      "path": "tests/scoped-pane-stores.spec.ts",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "701bded5767fe0ab7ada886247ef59bb4a2748f3f548b78504067f4339530ed6"
+    },
+    {
+      "path": "tests/split-pane-button.spec.tsx",
+      "status": "D",
+      "category": "构建/验证与诊断",
+      "sha256": null
+    },
+    {
+      "path": "tests/view-controller.spec.ts",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "585feb2b34ba76cc3fe989aa308c401d5b9353d5db5a6ee426a579b6ed33458e"
+    },
+    {
+      "path": "tsconfig.isolated.json",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "d4cd63550abbc3d1c5d5a5a877818a81230f36bcb76a62d15d68426f197ec87f"
+    },
+    {
+      "path": "vitest.config.ts",
+      "status": "M",
+      "category": "构建/验证与诊断",
+      "sha256": "a0edaf2787a48bc47995d0f786778d4105eaab58759c2589a41126a331337598"
+    },
+    {
+      "path": "vitest.isolated.config.ts",
+      "status": "A (untracked)",
+      "category": "构建/验证与诊断",
+      "sha256": "db495236c09bf67db5aee034393cc252852d7ffeafdf95b90b888989810d4f25"
+    }
+  ]
+}
