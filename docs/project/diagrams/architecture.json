@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "独立主窗口：当前生效结构",
-    "subtitle": "0.7.0-isolated.3：双窗与布局真实检查通过，完整引用和贴纸业务未验收",
+    "subtitle": "isolated.5：外层共用侧栏开关和尺寸，各窗保留原内容",
     "locale": "zh-CN"
   },
   "layout": {
@@ -95,7 +95,7 @@
       "id": "sidebar",
       "type": "frontend",
       "label": "该窗 BetterSidebar",
-      "sublabel": "仅选中窗的侧栏显示在最右",
+      "sublabel": "内容独立；开关由外层对齐",
       "row": 2,
       "col": 2,
       "size": [
@@ -133,6 +133,18 @@
       "label": "独立事件流承载",
       "sublabel": "子页 EventSource → WS → 原 SSE",
       "row": 3,
+      "col": 2,
+      "size": [
+        260,
+        90
+      ]
+    },
+    {
+      "id": "shared-chrome",
+      "type": "frontend",
+      "label": "公共侧栏入口",
+      "sublabel": "全局开关/尺寸；切窗只换内容",
+      "row": 1,
       "col": 2,
       "size": [
         260,
@@ -248,6 +260,22 @@
       "from": "transport",
       "to": "backend",
       "label": "原端点鉴权"
+    },
+    {
+      "id": "edge-shared-model",
+      "from": "model",
+      "to": "shared-chrome",
+      "label": "唯一开关与尺寸"
+    },
+    {
+      "id": "edge-shared-sidebar",
+      "from": "shared-chrome",
+      "to": "sidebar",
+      "label": "原开关回调；不改内容",
+      "labelAt": [
+        990,
+        373
+      ]
     }
   ]
 }

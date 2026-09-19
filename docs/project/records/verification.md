@@ -59,3 +59,13 @@ isolated.2 已在 RC2 副本启用运行，真实单窗与双窗连接加载通�
 用户正常停止后核对旧 run closed。备份 profile、接入绑定及能力回执，校验包 SHA256，安装后核验其他插件依赖规格、锁文件 resolution、19 个构件 pin 均保持。通过正式 repair 刷新接入指纹，其他绑定/配置/同步名单保持。实际包与构建产物哈希一致。
 
 证据：.dev/installed-layout3-result.json 与 .dev/installed-layout3-output.log；真实浏览器未拦截或替换插件脚本。页面异常 0，历史查询仍有 GRAPH_SESSION_NOT_FOUND / STICKER_MIGRATION_REQUIRED，未迁移数据、未发送模型请求。实例保持运行供用户验收。
+
+## 2026-09-19 isolated.5 共享侧栏
+
+15 项单元测试通过（含 9 项新增侧栏回归），严格客户端类型检查、构建与路径可移植性检查通过。25 项合成 Chromium 检查通过，包含原贴纸入口和引用跳转方法；新增“直接点击非焦点窗贴纸时展开意图不能丢失”的回归。合成服务/页面不代表真实业务保存。
+
+正式安装后的真实浏览器 15 项检查通过，未拦截替换任何 bundle：外层仅一组按钮、子页原按钮不可见、打开及关闭后切窗保持、每窗原页面保留、空白草稿显示默认文件页、底栏开关保持、高度、宽度共享、思维图下公共开关可用；页面异常 0。证据 evidence/shared-sidebar-installed.json 与 evidence/shared-sidebar-synthetic.json。
+
+安装前核验最新 run closed / handle finalized，备份原包、profile 和接入配置；其他 46 个插件入口/清单文件、19 个构件 pin 校验保持。正式 repair 后 connected，最终 Status 为 running。期间 .4 第一次 prepare 失败，.5 启动较慢，控制命令超时后再次只读检查确认运行；未把失败日志当成功，也未修改 Maintenance 代码或强制停止。
+
+真实引用/贴纸保存、模型发送和图数据编辑未执行。此次真实页面验收证明侧栏行为，不能扩大为所有插件业务已通过。

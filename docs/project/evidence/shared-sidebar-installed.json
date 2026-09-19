@@ -1,0 +1,27 @@
+{
+  "version": "0.7.0-isolated.5",
+  "instanceId": "i-7ecb6c19-80a5-4c2e-97e6-484bbfc0e926",
+  "origin": "http://127.0.0.1:8008",
+  "bootId": "0b0ca52c-7221-45d2-a7a8-729ae97d00d1",
+  "runId": "run-a34ea704-4431-4839-9206-007b7b108d97",
+  "replaced": 0,
+  "checks": [
+    "blank view keeps shared sidebar open",
+    "single outer button pair",
+    "child native controls hidden",
+    "left retains its management page",
+    "focus left keeps open",
+    "focus right restores default page",
+    "closed remains closed on view switch",
+    "native bottom panel has shared height",
+    "bottom remains open on blank view",
+    "bottom remains closed on switch",
+    "width shared across views",
+    "newly selected conversation keeps sidebar open",
+    "left page survives other conversation selection",
+    "controls outside map runtime",
+    "no page exceptions"
+  ],
+  "errors": [],
+  "scope": "Actual installed bundle; no model send or sticker save."
+}

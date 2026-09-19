@@ -21,4 +21,6 @@ relations:
 
 `isolated/focus.ts` 监听当前文档及同源嵌套 iframe 内的 pointerdown/focusin，随 iframe load 重新绑定、移除时清理。这样思维图嵌套画布也能选中所属主窗；并不修改 ThoughtDAG 代码。跨域 iframe 内部无法观察，未支持。
 
-通过 BetterSidebar 的现有 registerTab 注册“主窗口”页，提供添加、关闭、选择；订阅侧栏宽度同步布局。引用与贴纸正文、保存或跳转数据不会通过本插件通道转发。
+通过 BetterSidebar 的现有 registerTab 注册“主窗口”页，提供添加、关闭、选择；调用 sidebar-chrome 可见性适配器。引用与贴纸正文、保存或跳转数据不会通过本插件通道转发。
+
+焦点事件先记录本地即将选中，再通知外层。若用户在切窗确认前点击贴纸触发原侧栏展开，暂存可见性意图，在外层确认该窗后按新 revision 回报；不截获贴纸业务或正文。

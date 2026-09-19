@@ -12,3 +12,5 @@ status: current
 一个 View 对应一个 iframe 和独立前端环境，里面的普通插件照常运行。不同 View 可以打开同一个后端会话，但不会各复制一份会话数据库。它们共享后端持久化与原插件的并发语义，因此“前端独立”不等于“数据互相不可见”。
 
 新增分配新身份；聚焦不重建页面；关闭销毁该页面；切换外层全局面板只隐藏承载面，不销毁子页面；整页重载恢复默认单窗。参见 [[MOD-shell]]、[[MOD-surface]]。
+
+SidebarChrome 属于整个 Workspace，包含 panelOpen、bottomOpen、width、bottomHeight。chromeRevision 防止旧窗口回报覆盖公共开关；每窗只保留自己原有的 BetterSidebar 标签/页面。开关与尺寸不再保存在 View 中，不随焦点切换重置。

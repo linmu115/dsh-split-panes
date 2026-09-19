@@ -68,6 +68,9 @@
         ],
         "transport": [
           "MOD-event-transport"
+        ],
+        "shared-chrome": [
+          "MOD-sidebar-chrome"
         ]
       }
     },

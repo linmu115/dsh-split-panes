@@ -1,0 +1,31 @@
+{
+  "checks": [
+    "second starts blank",
+    "shared sidebar stays open on blank view",
+    "only one outer pair of controls",
+    "left draft retained",
+    "separate current sessions",
+    "real sticker caller opens B editor",
+    "right sidebar is at far right",
+    "focus preserves shared expanded state",
+    "left sticker owns A",
+    "left active sidebar also at far right",
+    "inactive sidebar hidden",
+    "explicit close survives view switch",
+    "clicking a sticker in inactive view reveals shared sidebar",
+    "view keeps its own editor content",
+    "bottom visibility shared across views",
+    "shared width survives focus",
+    "source jump scrolls its own document",
+    "source session opens only in right runtime",
+    "map mode independent from right dialogue",
+    "nested canvas focus routes shared list to its own view",
+    "outer global panel remount preserves child runtime",
+    "divider changes ratio",
+    "pointer divider drag works across iframe boundary",
+    "closing view preserves other draft",
+    "no browser exceptions"
+  ],
+  "errors": [],
+  "scope": "Synthetic browser fixture; reference jump methods extracted unchanged; sticker open function and ThoughtDAG mode shim loaded unchanged; DSH services, editor body and map canvas are contract fixtures."
+}

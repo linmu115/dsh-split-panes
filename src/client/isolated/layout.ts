@@ -19,17 +19,17 @@ export function installLayout(mode: 'shell' | 'child'): () => void {
     body[data-mv-mode="child"] [data-side="rightbar"] { display:none!important }
     body[data-mv-mode="child"] [data-mv-frame] { display:block!important }
     body[data-mv-mode="child"] [data-mv-center] {
-      position:fixed!important; top:0!important; bottom:var(--dsh-sidebar-height,0px)!important;
+      position:fixed!important; top:0!important; bottom:var(--mv-bottom,0px)!important;
       left:var(--mv-left,0px)!important; width:var(--mv-width,100%)!important;
       margin:0!important; min-height:0!important; overflow:hidden!important;
     }
-    body[data-mv-mode="child"] [data-dsh-panel]:not([data-dsh-bottom-panel]) { max-width:var(--mv-sidebar,100vw)!important }
+    body[data-mv-mode="child"] [data-dsh-panel]:not([data-dsh-bottom-panel]) { width:var(--mv-sidebar,0px)!important; max-width:var(--mv-sidebar,0px)!important; bottom:0!important; }
+    body[data-mv-mode="child"] [data-dsh-bottom-panel] { left:0!important; width:calc(100% - var(--mv-sidebar,0px))!important; height:var(--mv-bottom,0px)!important; max-height:var(--mv-bottom,0px)!important; }
+    body[data-mv-mode="child"] [data-dsh-toggle-cluster] { display:none!important }
     body[data-mv-mode="child"] [data-dsh-panel-host] { z-index:110!important }
-    body[data-mv-mode="child"][data-mv-external-view]:not([data-mv-sidebar-open]) [data-dsh-toggle-cluster] { top:56px!important }
     body[data-mv-mode="child"] [data-mv-external-layer] { left:var(--mv-left,0px)!important; right:auto!important; width:var(--mv-width,100%)!important; box-sizing:border-box!important }
     body[data-mv-mode="child"] [data-mv-dialog-layer] { left:var(--mv-left,0px)!important; right:auto!important; width:var(--mv-width,100%)!important; box-sizing:border-box!important }
     body[data-mv-mode="child"] [data-mv-dialog-layer] [role="dialog"] { max-width:calc(100% - 24px)!important; box-sizing:border-box!important }
-    body[data-mv-mode="child"] [data-dsh-toggle-cluster] { right:var(--mv-toggle-right,10px)!important }
     body[data-mv-mode="child"][data-mv-inactive] [data-dsh-panel-host] { visibility:hidden!important; pointer-events:none!important }
     body[data-mv-mode="child"] [data-slot="conversation.session.header.corner"] { display:none!important }
   `
@@ -89,6 +89,6 @@ export function installLayout(mode: 'shell' | 'child'): () => void {
     observer.disconnect(); cancelAnimationFrame(scheduled); tag.remove()
     for (const node of marked) for (const name of ['data-mv-center', 'data-mv-frame', 'data-mv-left', 'data-mv-dialog-layer', 'data-mv-external-layer']) node.removeAttribute(name)
     delete body.dataset.mvSidebarOpen; delete body.dataset.mvExternalView; delete body.dataset.mvMode; delete body.dataset.mvReady; delete body.dataset.mvInactive
-    for (const name of ['--mv-outer-sidebar', '--mv-left', '--mv-width', '--mv-sidebar', '--mv-toggle-right']) body.style.removeProperty(name)
+    for (const name of ['--mv-outer-sidebar', '--mv-left', '--mv-width', '--mv-sidebar', '--mv-bottom', '--mv-toggle-right']) body.style.removeProperty(name)
   }
 }

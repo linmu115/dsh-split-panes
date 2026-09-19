@@ -13,7 +13,7 @@ relations:
 
 # 当前实现及交付状态
 
-当前版本 **0.7.0-isolated.3** 已安装启用，真实双窗与布局检查通过。连接承载见 [[MOD-event-transport]]，验收边界见 [[VER-isolated]]。
+0.7.0-isolated.5 已安装启用到 RC2 副本；当前运行身份与 Maintenance run 均已核验。共享侧栏 15 项真实页面检查通过、页面异常 0；15 项单元和 25 项合成浏览器检查通过。引用和贴纸真实保存仍未验收。 共享侧栏见 [[MOD-sidebar-chrome]]，验收边界见 [[VER-isolated]]。
 
 ## 历史阶段记录
 
@@ -62,3 +62,9 @@ isolated.2 已在 RC2 副本启用运行，真实单窗与双窗连接加载通�
 用户正常停止后核对旧 run closed。备份 profile、接入绑定及能力回执，校验包 SHA256，安装后核验其他插件依赖规格、锁文件 resolution、19 个构件 pin 均保持。通过正式 repair 刷新接入指纹，其他绑定/配置/同步名单保持。实际包与构建产物哈希一致。
 
 证据：.dev/installed-layout3-result.json 与 .dev/installed-layout3-output.log；真实浏览器未拦截或替换插件脚本。页面异常 0，历史查询仍有 GRAPH_SESSION_NOT_FOUND / STICKER_MIGRATION_REQUIRED，未迁移数据、未发送模型请求。实例保持运行供用户验收。
+
+## 2026-09-19 shared sidebar 交付
+
+0.7.0-isolated.5 已安装启用到 RC2 副本；当前运行身份与 Maintenance run 均已核验。共享侧栏 15 项真实页面检查通过、页面异常 0；15 项单元和 25 项合成浏览器检查通过。引用和贴纸真实保存仍未验收。
+
+本次代码只修改分窗 fork。安装前确认旧 run closed / handle finalized，备份后核验其他 46 个插件入口/清单文件、19 个构件 pin、其他直接依赖规格均不变。正式 repair 更新本实例安装指纹。曾在 prepare 阶段失败；最终正式启动完成，Status 核验 running。没有修改 Maintenance 或其他插件源码。

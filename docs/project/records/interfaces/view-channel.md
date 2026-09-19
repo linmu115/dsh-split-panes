@@ -14,10 +14,13 @@ status: current
 | 方向 | 消息 | 作用 |
 |---|---|---|
 | 外层 → 子页 | navigate(revision, sessionId) | 切换或清空该窗会话 |
-| 外层 → 子页 | geometry、views | 主窗/侧栏尺寸和管理列表 |
+| 外层 → 子页 | geometry、views | 主窗/侧栏/底部栏尺寸和管理列表 |
+| 外层 → 子页 | sidebar-chrome(value, revision, active) | 公共开关与尺寸；选中身份确认 |
 | 子页 → 外层 | ready、focus、selection | 就绪、操作目标、会话变化 |
-| 子页 → 外层 | sidebar、manage、error | 宽度、增删选窗、可见错误 |
+| 子页 → 外层 | sidebar(value, revision, sessionId)、manage、error | 原侧栏用户动作、增删选窗、可见错误 |
 
 校验 origin、event.source、id、nonce。导航另外校验 revision；消息不是跨来源的安全沙箱，同源页面本来共享认证环境。构造子页 URL 只取 origin/pathname，不复制登录 token 参数或 fragment。
 
 加载慢显示重试；打开会话失败给出提示。此接口不承载引用、高亮、贴纸内容或思维图图数据；未来添加这些字段会改变已确认的隔离边界，应先重新确认。
+
+sidebar 回报校验当前 active 身份、会话与 chromeRevision；非焦点及过期回报不得改变外层状态。只承载布尔开关与尺寸，不增加任何业务正文。

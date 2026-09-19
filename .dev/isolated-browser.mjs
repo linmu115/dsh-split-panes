@@ -38,10 +38,10 @@ ${referenceCode}
 const STICKER_DETAIL_TAB_TYPE='dsh-session-sticker-board:detail', STICKER_DETAIL_TAB_ID=STICKER_DETAIL_TAB_TYPE;
 ${stickerCode}
 function referenceRange(){return null}
-const h=React.createElement;let current='a',state={panelOpen:false,width:320},editor='',editorSession='',main=null,headerSwitch=null,globalPanel=false;
+const h=React.createElement;let current='a',state={panelOpen:false,bottomOpen:false,width:320,bottomHeight:240},editor='',editorSession='',main=null,headerSwitch=null,globalPanel=false;
 const drafts={a:'',b:''},listeners=new Set(),sideListeners=new Set(),tabs=new Map(),disposers=[];
 const notify=()=>{for(const f of listeners)f();render()};const sideNotify=()=>{for(const f of sideListeners)f();render()};
-const sessions={list:{getSnapshot:()=>({current,phase:'ready',byId:{a:{displayTitle:'A'},b:{displayTitle:'B'}}}),subscribe:f=>{listeners.add(f);return()=>listeners.delete(f)}},open:id=>{current=id;notify()},clear:()=>{current=undefined;notify()},refresh:async()=>{}};
+const sessions={list:{getSnapshot:()=>({current,phase:'ready',byId:{a:{displayTitle:'A'},b:{displayTitle:'B'}}}),subscribe:f=>{listeners.add(f);return()=>listeners.delete(f)}},open:id=>{current=id;state={...state,panelOpen:false,bottomOpen:false};sideNotify();notify()},clear:()=>{current=undefined;state={...state,panelOpen:false,bottomOpen:false};sideNotify();notify()},refresh:async()=>{}};
 const sidebar={registerTab:t=>{tabs.set(t.id,t);return()=>tabs.delete(t.id)},getSnapshot:()=>({state,sessionId:current}),features:["updateTab","tabMeta"],isTabEnabled:()=>true,
 listTabInstances:()=>[],openTabResult:async(seed,scope)=>({seed,scope}),updateTabInstance:()=>true,activateTabInstance:handle=>{sidebar.openTab(handle.seed,handle.scope);return true},subscribeState:f=>{sideListeners.add(f);return()=>sideListeners.delete(f)},openTab:seed=>{editor=seed.type;editorSession=current;state={...state,panelOpen:true};sideNotify()}};
 const services={sessions,betterSidebar:sidebar,uiConversation:{binding:()=>({target:()=>({getSnapshot:()=>({order:['source-anchor'],nodes:new Map([['source-anchor',{}]])})})})}};
@@ -52,7 +52,7 @@ const root=ReactDOM.createRoot(document.getElementById('root'));
 function Native(){return h('div',{className:'native'},h('header',{style:{height:90,flexShrink:0,paddingTop:55}},headerSwitch?h(headerSwitch):null,h('b',{'data-session-title':''},current?current.toUpperCase():'空白会话'),h('button',{onClick:()=>{sessions.open('a')}},'选择 A'),h('button',{onClick:()=>{sessions.open('b')}},'选择 B'),h('button',{onClick:()=>window.fixture.jump()},'跳转 A 原文'),h('button',{onClick:async()=>{window.fixture.stickerOpened=await openStickerInSidebar(sidebar,{sessionId:current,stickerId:'note-'+current})}},'普通贴纸')),
 h('div',{className:'chat'},h('div',{style:{height:1000}},'conversation '+current),h('p',{'data-chat-anchor-key':'source-anchor'},'source text'),h('div',{style:{height:700}},'tail')),
 h('textarea',{'aria-label':'会话输入',value:drafts[current]||'',onChange:e=>{drafts[current]=e.target.value;render()}}))}
-function Sidebar(){return ReactDOM.createPortal(h('div',{'data-dsh-panel-host':''},h('div',{'data-dsh-toggle-cluster':''},h('button',{onClick:()=>{state={...state,panelOpen:!state.panelOpen};sideNotify()}},'侧栏')),
+function Sidebar(){return ReactDOM.createPortal(h('div',{'data-dsh-panel-host':''},h('div',{'data-dsh-toggle-cluster':''},h('button',{onClick:()=>{state={...state,bottomOpen:!state.bottomOpen};sideNotify()}},'底栏'),h('button',{onClick:()=>{state={...state,panelOpen:!state.panelOpen};sideNotify()}},'侧栏')),
 h('div',{'data-dsh-panel':'',style:{display:state.panelOpen?'block':'none'}},h('button',{onClick:()=>sidebar.openTab({type:'independent-main-views'})},'主窗口管理'),
 editor===STICKER_DETAIL_TAB_TYPE?h('section',{'aria-label':'贴纸编辑页'},h('h3',null,'贴纸 '+editorSession),h('textarea',{'aria-label':'贴纸注释',defaultValue:'note '+editorSession})):editor==='independent-main-views'?h(tabs.get(editor).component):h('p',null,'侧栏内容'))),document.body)}
 function render(){root.render(h(React.Fragment,null,h('div',{'data-slot':'root'},h('div',{style:{display:'grid',gridTemplateColumns:'200px minmax(0,1fr) 0px',height:'100%',overflow:'hidden'}},h('aside',null,h('div',{'data-slot':'sidebar'},h('button',{onClick:()=>sessions.open('a')},'会话 A'),h('button',{onClick:()=>sessions.open('b')},'会话 B'))),h('main',null,h('div',{'data-slot':'main'},globalPanel?h('p',null,'全局页面'):main?h(main):h('div',{'data-slot':'main.conversation'},h(Native)))),h('div',{'data-rightbar-col':''}))),h(Sidebar)))}
@@ -79,13 +79,16 @@ try {
   await page.waitForFunction(() => document.querySelector('iframe[data-main-view]')?.contentDocument?.body.hasAttribute('data-mv-ready'))
   const first = frames()[0]
   await first.getByRole('textbox', { name: '会话输入' }).fill('draft left')
-  await first.getByRole('button', { name: '侧栏', exact: true }).click()
+  await page.getByRole('button', { name: '展开右侧栏', exact: true }).click()
   await first.getByRole('button', { name: '主窗口管理' }).click()
   await first.getByRole('button', { name: '添加主窗口' }).click()
   await page.waitForFunction(() => document.querySelectorAll('iframe[data-main-view]').length===2 && [...document.querySelectorAll('iframe[data-main-view]')].every(f=>f.contentDocument?.body.hasAttribute('data-mv-ready')))
   const second = frames().find(f => f !== first)
   check('second starts blank', await second.evaluate(() => window.fixture.current===undefined))
+  check('shared sidebar stays open on blank view',await page.getByRole('button',{name:'收起右侧栏',exact:true}).isVisible()&&await page.getByRole('complementary',{name:'空白会话侧栏'}).isVisible())
+  check('only one outer pair of controls',await page.locator('[data-main-view-sidebar-controls] button').count()===2 && !(await second.locator('[data-dsh-toggle-cluster]').isVisible()))
   await page.getByRole('button', { name: '会话 B', exact: true }).click()
+  await second.waitForFunction(()=>window.fixture.current==='b')
   await second.getByRole('textbox', { name: '会话输入' }).fill('draft right')
   check('left draft retained', await first.getByRole('textbox', { name: '会话输入' }).inputValue()==='draft left')
   check('separate current sessions', await first.evaluate(()=>window.fixture.current)==='a' && await second.evaluate(()=>window.fixture.current)==='b')
@@ -93,11 +96,29 @@ try {
   await second.getByRole('region', { name: '贴纸编辑页' }).waitFor({state:'visible'})
   check('real sticker caller opens B editor', await second.evaluate(()=>window.fixture.stickerOpened===true && window.fixture.editorSession==='b'))
   check('right sidebar is at far right', (await second.getByRole('region',{name:'贴纸编辑页'}).boundingBox()).x > 1100)
+  await first.getByRole('textbox',{name:'会话输入'}).click()
+  check('focus preserves shared expanded state',await page.getByRole('button',{name:'收起右侧栏',exact:true}).isVisible())
   await first.getByRole('button', { name: '普通贴纸' }).click()
   await first.getByRole('region', { name: '贴纸编辑页' }).waitFor({state:'visible'})
   check('left sticker owns A', await first.evaluate(()=>window.fixture.editorSession)==='a')
   check('left active sidebar also at far right', (await first.getByRole('region',{name:'贴纸编辑页'}).boundingBox()).x > 1100)
   check('inactive sidebar hidden', await second.getByRole('region',{name:'贴纸编辑页'}).isVisible()===false)
+  await page.getByRole('button',{name:'收起右侧栏',exact:true}).click()
+  await second.getByRole('textbox',{name:'会话输入'}).click()
+  await page.waitForTimeout(100)
+  check('explicit close survives view switch',await page.getByRole('button',{name:'展开右侧栏',exact:true}).isVisible() && !(await second.getByRole('region',{name:'贴纸编辑页'}).isVisible()))
+  await first.getByRole('button',{name:'普通贴纸',exact:true}).click()
+  await page.getByRole('button',{name:'收起右侧栏',exact:true}).waitFor()
+  check('clicking a sticker in inactive view reveals shared sidebar',await first.getByRole('region',{name:'贴纸编辑页'}).isVisible())
+  await second.getByRole('textbox',{name:'会话输入'}).click()
+  await second.getByRole('region',{name:'贴纸编辑页'}).waitFor({state:'visible'})
+  check('view keeps its own editor content',await second.evaluate(()=>window.fixture.editorSession==='b'))
+  await page.getByRole('button',{name:'展开底部栏',exact:true}).click();await first.getByRole('textbox',{name:'会话输入'}).click();await page.waitForTimeout(100)
+  check('bottom visibility shared across views',await page.getByRole('button',{name:'收起底部栏',exact:true}).isVisible()&&await first.evaluate(()=>window.fixture.sidebar.getSnapshot().state.bottomOpen))
+  await page.getByRole('button',{name:'收起底部栏',exact:true}).click()
+  const widthHandle=page.getByRole('separator',{name:'调整右侧栏宽度'}),oldWidth=Number(await widthHandle.getAttribute('aria-valuenow'))
+  await widthHandle.press('ArrowLeft');await second.getByRole('textbox',{name:'会话输入'}).click()
+  check('shared width survives focus',Number(await widthHandle.getAttribute('aria-valuenow'))===oldWidth+20)
   await second.getByRole('button', { name: '跳转 A 原文' }).click()
   await second.waitForFunction(()=>document.querySelector('.chat').scrollTop>100)
   check('source jump scrolls its own document', await first.evaluate(()=>document.querySelector('.chat').scrollTop)===0)
@@ -118,7 +139,7 @@ try {
   await page.evaluate(()=>window.fixture.toggleGlobal())
   await first.getByRole('textbox',{name:'会话输入'}).waitFor()
   check('outer global panel remount preserves child runtime', await first.getByRole('textbox',{name:'会话输入'}).inputValue()==='draft left')
-  const divider=page.getByRole('separator'), before=await divider.boundingBox()
+  const divider=page.getByRole('separator',{name:'调整主窗口宽度'}), before=await divider.boundingBox()
   await divider.focus(); await page.keyboard.press('ArrowLeft')
   await page.waitForTimeout(80)
   check('divider changes ratio', (await divider.boundingBox()).x < before.x)

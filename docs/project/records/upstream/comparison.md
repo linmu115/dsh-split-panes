@@ -27,3 +27,7 @@ status: current
 | 版本与包 | 0.6.5 | 0.7.0-isolated.3；已试装，发行仅 lib、清单等 |
 
 逐文件变更、状态及当前指纹见 [[DIFF-files]]。上游原设计文档 docs/ARCHITECTURE.md 的内容仍是原路线说明，不能视为隔离版设计。
+
+## isolated.5 进一步差异
+
+公共外层持有 BetterSidebar 的两个开关和尺寸，切窗只更换内容。新增 sidebar-chrome.ts，对齐原按钮而不导入其他插件业务代码；上下文独立 document 与原事件流承载路线不变。

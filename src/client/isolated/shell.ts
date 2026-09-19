@@ -35,6 +35,7 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
     for (const view of state.views) {
       const child = frames.get(view.id)
       if (!child || !view.ready) continue
+      child.postMessage(envelope(view, {type:'sidebar-chrome', value:state.chrome, revision:state.chromeRevision, active:view.id===state.active}),host.location.origin)
       child.postMessage(envelope(view, { type: 'views', items: state.views.map(v => ({ id: v.id, sessionId: v.sessionId, active: v.id === state.active })) }), host.location.origin)
       if (sent.get(view.id) === view.revision) continue
       sent.set(view.id, view.revision)
@@ -56,9 +57,14 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
         if (body.sessionId !== view.sessionId) model.patch(view.id, { sessionId: body.sessionId })
         if (model.getSnapshot().active === view.id) mirror()
         break
-      case 'sidebar':
-        if (Number.isFinite(body.width) && body.width >= 0 && body.width !== view.sidebar) model.patch(view.id, { sidebar: body.width })
+      case 'sidebar': {
+        const state = model.getSnapshot(), value = body.value
+        if (view.id !== state.active || body.revision !== state.chromeRevision || body.sessionId !== view.sessionId) break
+        if (!value || typeof value.panelOpen !== 'boolean' || typeof value.bottomOpen !== 'boolean'
+          || !Number.isFinite(value.width) || !Number.isFinite(value.bottomHeight) || value.width < 0 || value.bottomHeight < 0) break
+        model.chrome({ ...value, width:Math.max(240,Math.min(1600,value.width)), bottomHeight:Math.max(120,Math.min(1000,value.bottomHeight)) })
         break
+      }
       case 'manage':
         if (view.id !== model.getSnapshot().active) return
         if (body.action === 'add') model.add()
@@ -88,6 +94,7 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
       const view = model.getSnapshot().views.find(v => v.id === id), child = frames.get(id)
       if (view && child) child.postMessage(envelope(view, { type: 'geometry', value }), host.location.origin)
     },
+    toggleSidebar(kind: 'right' | 'bottom') {const value=model.getSnapshot().chrome;model.chrome(kind==='right'?{panelOpen:!value.panelOpen}:{bottomOpen:!value.bottomOpen})},
     add() { model.add(); mirror() },
     close(id: string) { model.close(id); mirror() },
     focus,

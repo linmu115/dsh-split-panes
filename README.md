@@ -1,4 +1,4 @@
-> 本分支为 **0.7.0-isolated.3 独立会话视图版**，已在 DSH 0.1.5-rc.2 副本安装并完成双窗与布局检查。引用、贴纸完整业务仍未验收。当前设计与范围见 [本地说明](docs/LOCAL-FORK.md) 和 [项目地图](docs/project/map.md)。
+> 本分支为 **0.7.0-isolated.5 独立会话视图版**。0.7.0-isolated.5 已安装启用到 RC2 副本；当前运行身份与 Maintenance run 均已核验。共享侧栏 15 项真实页面检查通过、页面异常 0；15 项单元和 25 项合成浏览器检查通过。引用和贴纸真实保存仍未验收。 设计与范围见 [本地说明](docs/LOCAL-FORK.md) 和 [项目地图](docs/project/map.md)。
 
 [![dshfind](https://dshfind.com/api/card/lehhair/dsh-split-panes?lang=zh)](https://dshfind.com/zh/plugins/lehhair/dsh-split-panes?ref=badge)
 

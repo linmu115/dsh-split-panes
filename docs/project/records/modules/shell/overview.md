@@ -19,3 +19,5 @@ relations:
 `isolated/model.ts` 保存视图数组、当前焦点、比例和会话选择；`isolated/shell.ts` 连接外层 sessions 与各子页面。外层选会话发送给 active，子页面选择变化回报外层。新建会话尚未进入外层目录时先 refresh；generation 防止刷新完成后覆盖用户较新的选择。
 
 当前 max=2 是代码硬限制，不是已经可用的任意多窗功能。模型可容纳扩展思路，几何和 UI 仍须改造。
+
+外层模型统一维护 SidebarChrome / chromeRevision。增删、切窗、导航不改变公共开关；向各子页发送 sidebar-chrome，仅接受 active 窗、匹配会话和当前 revision 的原侧栏用户动作。参见 [[MOD-sidebar-chrome]]。

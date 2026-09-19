@@ -1,0 +1,75 @@
+{
+  "baseline": "17fc8390deaad5892b5a26dc9ce8e6ed5e735eca",
+  "version": "0.7.0-isolated.5",
+  "scope": "Current shared-sidebar changes outside map records",
+  "files": [
+    {
+      "path": ".dev/isolated-browser.mjs",
+      "sha256": "b749cd963c09f5e5b685cbf41c1a41b844795fcc5cb8541cc2daf6979a0391b7"
+    },
+    {
+      "path": "README.md",
+      "sha256": "fd3eaed7a81873e37b76feb09e8594b81195b93f27e3a1d2fa8af8b93f7bdc10"
+    },
+    {
+      "path": "docs/LOCAL-FORK.md",
+      "sha256": "064b3359640cf68e315bffd0f62240bc74a282a11b3b73431b5bfd0399ab2589"
+    },
+    {
+      "path": "dsh.plugin.json",
+      "sha256": "d45ad0ea9199e6bbc0855d8db93aea68dc86d7457947d0bd6098f586127e262a"
+    },
+    {
+      "path": "lib/client.js",
+      "sha256": "4543870b78d46141edf73e905707defb0b458a96f86ea69a015adc14248107aa"
+    },
+    {
+      "path": "package.json",
+      "sha256": "0e819b4fbd42f8bbebfb49a5d6abd83406e626429033341055ef997662a13eb4"
+    },
+    {
+      "path": "src/client/isolated/Workspace.tsx",
+      "sha256": "250f6438549d11bdc5ce8c0fb11e3e3ac5c30529f7d392f4574d9e295f386a16"
+    },
+    {
+      "path": "src/client/isolated/child.tsx",
+      "sha256": "7f4138fdd30820dcfc9968de3dfe6c9ace2912e2ceaaac3087a976ca276a8c0f"
+    },
+    {
+      "path": "src/client/isolated/contracts.ts",
+      "sha256": "8fa8d6cbd5b221f332f15465e4e29416b5d813a758fcf221d0991946f1bb6729"
+    },
+    {
+      "path": "src/client/isolated/layout.ts",
+      "sha256": "d934c320b4ef780fc53ea2b764ec93f37a1bb49b913e0d99d2b7e638f99c86d9"
+    },
+    {
+      "path": "src/client/isolated/model.ts",
+      "sha256": "b45c044196499a0b26491d7d30ea7a888a385d1451217f8cd7842b4e9a3023d2"
+    },
+    {
+      "path": "src/client/isolated/protocol.ts",
+      "sha256": "0fe0f1fa244a73b9b1bc15645235897ac39de11d8d73190d3580e559b409851c"
+    },
+    {
+      "path": "src/client/isolated/shell.ts",
+      "sha256": "e44fe9095e7adea49a2322ee6b816f5df92e0261b7097717a480a0b3e589fde3"
+    },
+    {
+      "path": "src/client/isolated/sidebar-chrome.ts",
+      "sha256": "2569f4276a2a357e2b5714557f47312dd7f9253dfa02795ab7a546641e98944c"
+    },
+    {
+      "path": "src/client/isolated/workspace.module.css",
+      "sha256": "c5ead9ea9f598ded01a3ac23500486c37a61dcf296919560a68fbc8485b5d4bd"
+    },
+    {
+      "path": "tests/sidebar-chrome.spec.ts",
+      "sha256": "faeb3ff54b4801ef718f26675ee57bd5b9632d0c4b19f53d0cc38a9152a2b2f0"
+    },
+    {
+      "path": "vitest.isolated.config.ts",
+      "sha256": "4f4b1288675e71a8bf9012000159ed2c84a7a25a80a4230291101a9c251e48d1"
+    }
+  ]
+}
