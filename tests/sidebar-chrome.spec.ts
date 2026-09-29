@@ -87,3 +87,37 @@ describe('shared BetterSidebar chrome',()=>{
   send(second,right,revision,'b');expect(model.getSnapshot().chrome).toEqual(chrome);shell.dispose()
  })
 })
+
+
+it('adopts the restored native owner before applying any placeholder closed state',()=>{
+ let owner:string|undefined,expanded=true,changed=()=>{}
+ const sidebar={registerTab:()=>()=>{},getSnapshot:()=>({sessionId:'a',state:{bottomOpen:true,width:620,bottomHeight:320}}),subscribeState:()=>()=>{}}
+ const native={mounted:{getSnapshot:()=>owner,subscribe:(fn:()=>void)=>{changed=fn;return()=>{}}},isExpanded:()=>expanded,toggleExpanded:vi.fn(()=>{expanded=!expanded})}
+ const queue=new Map<number,FrameRequestCallback>();let id=0
+ const report=vi.fn(),binding=bindSidebarChrome(sidebar,report,document,fn=>{queue.set(++id,fn);return id},id=>queue.delete(id),native)
+ const flush=()=>{const batch=[...queue.values()];queue.clear();batch.forEach(fn=>fn(0))}
+ binding.apply({...chrome,panelOpen:false,bottomOpen:false},0,true,'a');flush()
+ expect(report).not.toHaveBeenCalled();expect(native.toggleExpanded).not.toHaveBeenCalled()
+ owner='other';changed();flush();expect(report).not.toHaveBeenCalled()
+ owner='a';changed();flush()
+ expect(report).toHaveBeenCalledExactlyOnceWith({panelOpen:true,bottomOpen:true,width:620,bottomHeight:320},0,'a')
+ expect(native.toggleExpanded).not.toHaveBeenCalled()
+ binding.apply({panelOpen:true,bottomOpen:true,width:620,bottomHeight:320},1,true);flush()
+ expect(native.toggleExpanded).not.toHaveBeenCalled();binding.dispose()
+})
+it('initializes from an already collapsed session even when it matches the placeholder',()=>{
+ const model=createViewModel('a')
+ expect(model.getSnapshot().chromeInitialized).toBe(false)
+ model.chrome(model.getSnapshot().chrome)
+ expect(model.getSnapshot().chromeInitialized).toBe(true)
+ expect(model.getSnapshot().chromeRevision).toBe(1)
+})
+it('lets an explicit parent action supersede initial native adoption',()=>{
+ const f=fixture()
+ f.set({panelOpen:true,bottomOpen:true},'b')
+ f.binding.apply({...chrome,panelOpen:false,bottomOpen:false},0,true,'a');f.flush()
+ expect(f.right).not.toHaveBeenCalled()
+ f.binding.apply({...chrome,panelOpen:false,bottomOpen:false},1,true);f.flush()
+ expect(f.sidebar.getSnapshot().state.panelOpen).toBe(false)
+ expect(f.report).not.toHaveBeenCalled();f.binding.dispose()
+})

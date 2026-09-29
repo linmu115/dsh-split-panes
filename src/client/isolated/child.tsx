@@ -30,7 +30,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
     const body = event.data.body as Command
     if (body.type === 'sidebar-chrome') {
       if (!Number.isSafeInteger(body.revision) || !body.value || typeof body.value.panelOpen !== 'boolean' || typeof body.value.bottomOpen !== 'boolean' || ![body.value.width,body.value.bottomHeight].every(Number.isFinite)) return
-      chromeCommand=body; chromeBinding?.apply(body.value,body.revision,body.active)
+      chromeCommand=body; chromeBinding?.apply(body.value,body.revision,body.active,body.adoptSession)
     } else if (body.type === 'geometry') {
       const { left, width, sidebar, bottom = 0, active } = body.value
       if (![left, width, sidebar, bottom].every(n => Number.isFinite(n) && n >= 0)) return
@@ -114,7 +114,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
     }
     childCtx.effect(() => {
       chromeBinding=bindSidebarChrome(sidebar,(value,revision,sessionId)=>notify({type:'sidebar',value,revision,sessionId}),document,requestAnimationFrame,cancelAnimationFrame,childCtx.get('sidebarRight') as import('./sidebar-chrome.ts').NativeSidebar)
-      if(chromeCommand) chromeBinding.apply(chromeCommand.value,chromeCommand.revision,chromeCommand.active)
+      if(chromeCommand) chromeBinding.apply(chromeCommand.value,chromeCommand.revision,chromeCommand.active,chromeCommand.adoptSession)
       const unregister = sidebar.registerTab({ id: 'independent-main-views', title: '主窗口', single: true, order: 15, component: ViewControls })
       return () => { chromeBinding?.dispose(); chromeBinding=undefined; unregister() }
     }, 'independent-views: sidebar controls')

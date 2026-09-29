@@ -5,11 +5,11 @@ export interface View extends ViewIdentity {
   ready: boolean
   error: string | null
 }
-export interface ModelState { views: View[]; active: string; ratio: number; chrome: SidebarChrome; chromeRevision: number }
+export interface ModelState { views: View[]; active: string; ratio: number; chrome: SidebarChrome; chromeRevision: number; chromeInitialized: boolean }
 export function createViewModel(initial: string | null, uuid = () => crypto.randomUUID()) {
   const make = (sessionId: string | null): View => ({ id: uuid(), nonce: uuid(), sessionId, revision: 0, ready: false, error: null })
   const first = make(initial)
-  let state: ModelState = { views: [first], active: first.id, ratio: .5, chrome: {panelOpen:false,bottomOpen:false,width:460,bottomHeight:280}, chromeRevision:0 }
+  let state: ModelState = { views: [first], active: first.id, ratio: .5, chrome: {panelOpen:false,bottomOpen:false,width:460,bottomHeight:280}, chromeRevision:0, chromeInitialized:false }
   const listeners = new Set<() => void>()
   const update = (next: ModelState) => { state = next; for (const fn of listeners) fn() }
   const patch = (id: string, value: Partial<View>) => {
@@ -35,7 +35,7 @@ export function createViewModel(initial: string | null, uuid = () => crypto.rand
     },
     chrome(value: Partial<SidebarChrome>) {
       const chrome = {...state.chrome, ...value}
-      if (JSON.stringify(chrome) !== JSON.stringify(state.chrome)) update({...state, chrome, chromeRevision:state.chromeRevision+1})
+      if (!state.chromeInitialized || JSON.stringify(chrome) !== JSON.stringify(state.chrome)) update({...state, chrome, chromeInitialized:true, chromeRevision:state.chromeRevision+1})
     },
     ratio(value: number) { if (Number.isFinite(value)) update({ ...state, ratio: Math.max(.2, Math.min(.8, value)) }) },
     navigate(sessionId: string | null) {

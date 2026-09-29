@@ -34,7 +34,7 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
     for (const view of state.views) {
       const child = frames.get(view.id)
       if (!child || !view.ready) continue
-      child.postMessage(envelope(view, {type:'sidebar-chrome', value:state.chrome, revision:state.chromeRevision, active:view.id===state.active}),host.location.origin)
+      child.postMessage(envelope(view, {type:'sidebar-chrome', value:state.chrome, revision:state.chromeRevision, active:view.id===state.active,...(state.chromeInitialized?{}:{adoptSession:view.sessionId})}),host.location.origin)
       child.postMessage(envelope(view, { type: 'views', items: state.views.map(v => ({ id: v.id, sessionId: v.sessionId, active: v.id === state.active })) }), host.location.origin)
       if (sent.get(view.id) === view.revision) continue
       sent.set(view.id, view.revision)

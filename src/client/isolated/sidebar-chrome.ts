@@ -10,6 +10,7 @@ export interface NativeSidebar {
 export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrome, revision: number, sessionId: string | null) => void,
   doc = document, schedule = requestAnimationFrame, cancel = cancelAnimationFrame, native?: NativeSidebar) {
   let desired: SidebarChrome | null = null, revision = -1, active = false, disposed = false, pending = 0
+  let adoptSession: string | null | undefined
   let baseline: SidebarChrome | null = null, session: string | null | undefined
   let nativeClick = false, awaitingControls = true, focusPending = false
   let userIntent: Partial<Pick<SidebarChrome,'panelOpen'|'bottomOpen'>> | null = null
@@ -24,6 +25,16 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
     if (disposed || !desired || focusPending) return
     const current = read()
     if (!current) { baseline=null;session=undefined;return }
+    if (adoptSession !== undefined) {
+      // Native persisted layout is authoritative on the first active document mount.
+      // Do not write the parent's placeholder false values into a restored session.
+      if (!active || adoptSession === null || current.sessionId !== adoptSession
+        || (native && native.mounted.getSnapshot() !== adoptSession)) return
+      adoptSession = undefined; desired = {...current.value}
+      session = current.sessionId; baseline = current.value; awaitingControls = false
+      report(desired, revision, current.sessionId)
+      return
+    }
     session = current.sessionId; baseline=current.value
     const buttons = [...doc.querySelectorAll<HTMLButtonElement>('[data-dsh-toggle-cluster] button')]
     const rightMismatch = current.value.panelOpen !== desired.panelOpen
@@ -46,6 +57,7 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
   const changed = () => {
     const current = read()
     if (!current || !desired) {baseline=null;session=undefined;return}
+    if (adoptSession !== undefined) { enqueue(); return }
     const previous=baseline, changedSession=current.sessionId!==session
     baseline=current.value; session=current.sessionId
     if (nativeClick) return
@@ -69,10 +81,10 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
       focusPending=true
       const current=read();baseline=current?.value??null;session=current?.sessionId
     },
-    apply(value: SidebarChrome, nextRevision: number, selected: boolean) {
+    apply(value: SidebarChrome, nextRevision: number, selected: boolean, adopt?: string | null) {
       if (nextRevision < revision) return
-      const same = nextRevision===revision && selected===active && JSON.stringify(value)===JSON.stringify(desired)
-      desired={...value}; revision=nextRevision; active=selected
+      const same = nextRevision===revision && selected===active && adopt===adoptSession && JSON.stringify(value)===JSON.stringify(desired)
+      desired={...value}; revision=nextRevision; active=selected; adoptSession=adopt
       if(selected&&focusPending){
         focusPending=false
         if(userIntent){const next={...desired,...userIntent};userIntent=null;desired=next;report(next,revision,read()?.sessionId??null)}

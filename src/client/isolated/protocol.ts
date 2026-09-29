@@ -5,7 +5,7 @@ export interface Geometry { left: number; width: number; sidebar: number; bottom
 export interface ViewSummary { id: string; sessionId: string | null; active: boolean }
 export interface SidebarChrome { panelOpen: boolean; bottomOpen: boolean; width: number; bottomHeight: number }
 export type Command =
-  | { type: 'sidebar-chrome'; value: SidebarChrome; revision: number; active: boolean }
+  | { type: 'sidebar-chrome'; value: SidebarChrome; revision: number; active: boolean; adoptSession?: string | null }
   | { type: 'navigate'; revision: number; sessionId: string | null }
   | { type: 'geometry'; value: Geometry }
   | { type: 'views'; items: ViewSummary[] }

@@ -99,3 +99,8 @@ Cold child navigation now reports a revision-tagged success or failure. A stale 
 ## 0.7.0-dsh02.4 cold catalog readiness
 
 The official Session Manager may resolve refresh after a transport failure while its catalog is still pending. Child navigation now waits for the actual ready catalog to contain its target Session before calling uiWorkspace.openSession. A subsequent reconnect publication resumes navigation; a 15-second deadline, newer revision, or disposal releases the observer. The adapter is checked directly against the published ISessions and UiWorkspace SDK. Failed navigation diagnostics serialize only stage, revision, Session ID and error message.
+
+
+## 0.7.0-dsh02.5 restored sidebar visibility
+
+The official sidebar persists layout.expanded. The parent formerly sent its initial closed placeholder on child readiness, which overwrote a restored expanded sidebar. The first active child now adopts the native state only after the requested owner mounts; the parent then controls shared chrome as before. Inactive or wrong-owner windows cannot seed the initial state, and explicit parent input supersedes adoption. Existing tab content and metadata are untouched.
