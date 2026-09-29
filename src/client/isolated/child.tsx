@@ -1,4 +1,4 @@
-import { adaptSessions } from './navigation.ts'
+import { adaptSessions, waitForCatalogSession } from './navigation.ts'
 import { useSyncExternalStore } from 'react'
 import type { ClientContext, Sessions, Sidebar } from './contracts.ts'
 import { accepts, envelope, type Command, type Notice, type ViewIdentity, type ViewSummary } from './protocol.ts'
@@ -14,6 +14,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
   let chromeBinding: ReturnType<typeof bindSidebarChrome> | undefined
   let chromeCommand: Extract<Command,{type:'sidebar-chrome'}> | undefined
   let revision = -1, requestedRevision = -1, applying = false, initialized = false, disposed = false
+  let navigationAbort: AbortController | undefined
   let previous: string | null | undefined
   let items: ViewSummary[] = []
   const listeners = new Set<() => void>()
@@ -46,12 +47,13 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
     } else if (body.type === 'navigate') {
       if (!Number.isSafeInteger(body.revision) || body.revision < requestedRevision
         || (body.sessionId !== null && typeof body.sessionId !== 'string')) return
+      navigationAbort?.abort(new Error('View navigation superseded'))
+      const navigation = navigationAbort = new AbortController()
       requestedRevision = body.revision
       applying = true
       let stage: 'catalog' | 'open' = 'catalog'
       try {
-        const snapshot = sessions.list.getSnapshot()
-        if (snapshot.phase === 'pending' || (body.sessionId && snapshot.byId && !snapshot.byId[body.sessionId])) await sessions.refresh()
+        if (body.sessionId !== null) await waitForCatalogSession(sessions, body.sessionId, navigation.signal)
         if (disposed || requestedRevision !== body.revision) return
         document.body.toggleAttribute('data-mv-blank', body.sessionId === null)
         stage = 'open'
@@ -63,7 +65,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
         notify({ type: 'navigated', revision })
       } catch (error) {
         if (disposed || requestedRevision !== body.revision) return
-        console.warn('[dsh-split-panes] view navigation failed', { stage, revision: body.revision, sessionId: body.sessionId, error: error instanceof Error ? error.message : String(error) })
+        console.warn('[dsh-split-panes] view navigation failed ' + JSON.stringify({ stage, revision: body.revision, sessionId: body.sessionId, error: error instanceof Error ? error.message : String(error) }))
         notify({ type: 'error', revision: body.revision, stage, message: '会话未能打开，可在左侧重新选择。' })
       } finally {
         if (requestedRevision === body.revision) { applying = false; publish() }
@@ -87,7 +89,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
     const unsubscribe = sessions.list.subscribe(publish)
     notify({ type: 'ready' })
     return () => {
-      blank.remove(); disposed = true; unsubscribe()
+      blank.remove(); disposed = true; navigationAbort?.abort(new Error('View disposed')); unsubscribe()
       window.removeEventListener('message', receive)
       unwatchFocus()
     }

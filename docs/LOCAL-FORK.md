@@ -94,3 +94,8 @@ The isolated surface lives beside #root, so it must mirror the official root's i
 ## 0.7.0-dsh02.3 navigation receipts
 
 Cold child navigation now reports a revision-tagged success or failure. A stale failure cannot replace the current view status, and successful navigation clears an earlier error. Navigation warnings identify catalog versus open stage and target Session ID; no authentication token or message body is logged. The onboarding ownership behavior of dsh02.2 is retained.
+
+
+## 0.7.0-dsh02.4 cold catalog readiness
+
+The official Session Manager may resolve refresh after a transport failure while its catalog is still pending. Child navigation now waits for the actual ready catalog to contain its target Session before calling uiWorkspace.openSession. A subsequent reconnect publication resumes navigation; a 15-second deadline, newer revision, or disposal releases the observer. The adapter is checked directly against the published ISessions and UiWorkspace SDK. Failed navigation diagnostics serialize only stage, revision, Session ID and error message.

@@ -1,7 +1,7 @@
 {
   "name": "@dsh-external/dsh-split-panes",
   "description": "Independent conversation runtimes with shared outer session navigation and the active view BetterSidebar.",
-  "version": "0.7.0-dsh02.3",
+  "version": "0.7.0-dsh02.4",
   "private": true,
   "type": "module",
   "main": "lib/index.js",

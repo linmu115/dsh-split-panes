@@ -1,5 +1,5 @@
 import {describe,expect,it,vi} from 'vitest'
-import {adaptSessions} from '../src/client/isolated/navigation.ts'
+import {adaptSessions,waitForCatalogSession} from '../src/client/isolated/navigation.ts'
 import {bindSidebarChrome} from '../src/client/isolated/sidebar-chrome.ts'
 import type {ClientContext} from '../src/client/isolated/contracts.ts'
 import {installLayout} from '../src/client/isolated/layout.ts'
@@ -34,4 +34,26 @@ describe('DSH 0.2 native navigation and sidebar',()=>{
   expect(css).not.toContain('body[data-mv-mode="child"] [data-rightbar-col],')
   dispose();expect(document.body.dataset.mvMode).toBeUndefined()
  })
+})
+
+
+it('waits for reconnect publication when refresh resolves with the catalog still pending',async()=>{
+ let phase='pending'
+ const listeners=new Set<()=>void>(),refresh=vi.fn(async()=>{})
+ const sessions={list:{getSnapshot:()=>({phase,byId:phase==='ready'?{target:{}}:{}}),subscribe:(fn:()=>void)=>{listeners.add(fn);return()=>{listeners.delete(fn)}}},refresh,open:vi.fn(),clear:()=>{}}
+ let completed=false
+ const task=waitForCatalogSession(sessions,'target',new AbortController().signal).then(()=>{completed=true})
+ await Promise.resolve();await Promise.resolve()
+ expect(refresh).toHaveBeenCalledOnce();expect(completed).toBe(false)
+ phase='ready';for(const fn of listeners)fn();await task
+ expect(listeners.size).toBe(0)
+})
+it('bounds missing target waits and releases cancelled navigation observers',async()=>{
+ const listeners=new Set<()=>void>()
+ const sessions={list:{getSnapshot:()=>({phase:'ready',byId:{}}),subscribe:(fn:()=>void)=>{listeners.add(fn);return()=>{listeners.delete(fn)}}},refresh:async()=>{},open:vi.fn(),clear:()=>{}}
+ const controller=new AbortController(),task=waitForCatalogSession(sessions,'gone',controller.signal)
+ controller.abort(new Error('superseded'))
+ await expect(task).rejects.toThrow('superseded');expect(listeners.size).toBe(0)
+ await expect(waitForCatalogSession(sessions,'gone',new AbortController().signal,10)).rejects.toThrow('catalog')
+ expect(listeners.size).toBe(0)
 })
