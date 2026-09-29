@@ -15,5 +15,5 @@ export interface ClientContext {
   get(name: string): unknown
   effect(body: () => () => void, label?: string): unknown
   inject(names: string[], callback: (ctx: ClientContext) => void | (() => void)): unknown
-  slots: { register(options: Record<string, unknown>, component: unknown): () => void }
+  slots: { inject(name: string, callback: () => (() => void)): unknown; register(options: Record<string, unknown>, component: unknown): () => void }
 }

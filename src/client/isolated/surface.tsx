@@ -1,18 +1,24 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { createRoot } from 'react-dom/client'
 import type { ClientContext } from './contracts.ts'
 import type { ViewModel } from './model.ts'
 import type { Shell } from './shell.ts'
+import { mirrorRootInert, type OnboardingGate } from './onboarding.tsx'
 import { Workspace } from './Workspace.tsx'
 
 /** Retain frame documents even while the shell temporarily shows another panel. */
-export function installSurface(ctx: ClientContext, model: ViewModel, shell: Shell) {
+export function installSurface(ctx: ClientContext, model: ViewModel, shell: Shell, onboarding: OnboardingGate) {
   const surface = document.createElement('div')
   surface.dataset.dshMainViewSurface = ''
   Object.assign(surface.style, { position: 'fixed', display: 'none', zIndex: '2' })
   document.body.append(surface)
   const root = createRoot(surface)
-  root.render(<Workspace model={model} shell={shell} />)
+  function ReadyWorkspace() {
+    const ready = useSyncExternalStore(onboarding.subscribe, onboarding.getSnapshot)
+    return ready ? <Workspace model={model} shell={shell} /> : null
+  }
+  root.render(<ReadyWorkspace />)
+  ctx.effect(() => mirrorRootInert(surface), 'independent-views: official blocking modal ownership')
   ctx.effect(() => () => { root.unmount(); surface.remove() }, 'independent-views: persistent frame documents')
   function Anchor() {
     const ref = useRef<HTMLDivElement>(null)

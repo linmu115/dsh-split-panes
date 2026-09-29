@@ -1,4 +1,4 @@
-# DSH 0.2 RC2 candidate: 0.7.0-dsh02.1
+# DSH 0.2 RC2 candidate: 0.7.0-dsh02.2
 
 Target: exact official DSH 0.2.0-rc.2, BetterSidebar 0.24.1-dsh02.1. This candidate is not installed. UI and real browser interaction are not accepted yet.
 
@@ -84,3 +84,8 @@ sidebar-chrome.ts 使用公开 getSnapshot/subscribeState 读取状态，通过�
 切换焦点到另一窗时，将用户紧接着触发的原侧栏展开意图保留到外层确认该窗，再按新 revision 回报。避免打开贴纸的请求被焦点同步覆盖。全局开关也同步非焦点窗的原开关，非焦点内容仍隐藏；不复制标签与编辑内容。
 
 实际安装页面检查覆盖外层唯一按钮、切窗保持展开/关闭、默认文件页、各窗页面保留、底部栏开关与高度、共享宽度、思维图下开关；不发送模型消息，不保存贴纸。
+
+
+## 0.7.0-dsh02.2 onboarding ownership
+
+The isolated surface lives beside #root, so it must mirror the official root's inert state while a blocking modal owns the app. Child frames are first mounted only when the parent settings.onboarding coordinator reaches our final readiness step (or its selected Session is already nonblank). In child documents, an initial delegate step leaves automatic onboarding to the parent. This uses the public ordered slot contract: it never reads or writes acknowledgement values and never calls another step's completion callback. Explicitly reopened settings steps remain available through the official coordinator. Official settings-general and settings-models are declared client prerequisites so their initial steps register first.
