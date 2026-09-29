@@ -14,11 +14,10 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
     const selected = active.sessionId
     const apply = () => {
       if (disposed || generation !== mirrorGeneration) return
-      lastSelection = selected
+      lastSelection = selected ?? sessions.list.getSnapshot().current ?? null
       mirroring = true
       try {
-        if (selected === null) sessions.clear()
-        else if (sessions.list.getSnapshot().current !== selected) sessions.open(selected)
+        if (selected !== null && sessions.list.getSnapshot().current !== selected) sessions.open(selected)
       } finally { mirroring = false }
     }
     const snapshot = sessions.list.getSnapshot()

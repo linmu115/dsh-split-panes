@@ -8,7 +8,7 @@ export interface Sessions {
 }
 export interface Sidebar {
   registerTab(tab: { id: string; title: string; single: boolean; order: number; component: () => ReactNode }): () => void
-  getSnapshot(): { sessionId?: string | null; state?: { panelOpen: boolean; bottomOpen?: boolean; width: number; bottomHeight?: number } }
+  getSnapshot(): { sessionId?: string | null; state?: { panelOpen?: boolean; bottomOpen?: boolean; width?: number; bottomHeight?: number } }
   subscribeState(fn: () => void): () => void
 }
 export interface ClientContext {

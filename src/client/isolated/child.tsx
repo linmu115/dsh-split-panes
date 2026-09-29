@@ -1,3 +1,4 @@
+import { adaptSessions } from './navigation.ts'
 import { useSyncExternalStore } from 'react'
 import type { ClientContext, Sessions, Sidebar } from './contracts.ts'
 import { accepts, envelope, type Command, type Notice, type ViewIdentity, type ViewSummary } from './protocol.ts'
@@ -7,7 +8,7 @@ import { bindSidebarChrome } from './sidebar-chrome.ts'
 import { installLayout } from './layout.ts'
 
 export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
-  const sessions = ctx.get('sessions') as Sessions
+  const sessions = adaptSessions(ctx)
   const origin = window.location.origin
   const notify = (body: Notice) => window.parent.postMessage(envelope(identity, body), origin)
   let chromeBinding: ReturnType<typeof bindSidebarChrome> | undefined
@@ -51,10 +52,10 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
         const snapshot = sessions.list.getSnapshot()
         if (snapshot.phase === 'pending' || (body.sessionId && snapshot.byId && !snapshot.byId[body.sessionId])) await sessions.refresh()
         if (disposed || requestedRevision !== body.revision) return
-        if (body.sessionId === null) sessions.clear()
-        else sessions.open(body.sessionId)
+        document.body.toggleAttribute('data-mv-blank', body.sessionId === null)
+        if (body.sessionId !== null) sessions.open(body.sessionId)
         revision = body.revision
-        initialized = true
+        initialized = body.sessionId !== null
         previous = undefined
         document.body.dataset.mvReady = ''
       } catch {
@@ -69,17 +70,26 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
     const focus = () => {chromeBinding?.focus();notify({ type: 'focus' })}
     window.addEventListener('message', receive)
     const unwatchFocus = observeViewFocus(document, focus)
+    const blank = document.createElement('div')
+    blank.dataset.mvBlankPrompt = ''
+    const hint = document.createElement('p'); hint.textContent = '从左侧选择会话，或新建会话。'
+    const start = document.createElement('button'); start.textContent = '新建会话'
+    start.onclick = () => {
+      initialized = true; previous = sessions.list.getSnapshot().current ?? null; document.body.removeAttribute('data-mv-blank')
+      ;(ctx.get('uiWorkspace') as { startSession(): void }).startSession()
+    }
+    blank.append(hint, start); document.body.append(blank)
     const unsubscribe = sessions.list.subscribe(publish)
     notify({ type: 'ready' })
     return () => {
-      disposed = true; unsubscribe()
+      blank.remove(); disposed = true; unsubscribe()
       window.removeEventListener('message', receive)
       unwatchFocus()
     }
   }, 'independent-views: child channel')
 
   // Every child uses its own unmodified BetterSidebar service and sticker pages.
-  ctx.inject(['betterSidebar'], childCtx => {
+  ctx.inject(['betterSidebar', 'sidebarRight'], childCtx => {
     const sidebar = childCtx.get('betterSidebar') as Sidebar
     const ViewControls = () => {
       const views = useSyncExternalStore(fn => { listeners.add(fn); return () => { listeners.delete(fn) } }, () => items)
@@ -96,7 +106,7 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
       </div>
     }
     childCtx.effect(() => {
-      chromeBinding=bindSidebarChrome(sidebar,(value,revision,sessionId)=>notify({type:'sidebar',value,revision,sessionId}))
+      chromeBinding=bindSidebarChrome(sidebar,(value,revision,sessionId)=>notify({type:'sidebar',value,revision,sessionId}),document,requestAnimationFrame,cancelAnimationFrame,childCtx.get('sidebarRight') as import('./sidebar-chrome.ts').NativeSidebar)
       if(chromeCommand) chromeBinding.apply(chromeCommand.value,chromeCommand.revision,chromeCommand.active)
       const unregister = sidebar.registerTab({ id: 'independent-main-views', title: '主窗口', single: true, order: 15, component: ViewControls })
       return () => { chromeBinding?.dispose(); chromeBinding=undefined; unregister() }

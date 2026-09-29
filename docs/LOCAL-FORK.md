@@ -1,3 +1,17 @@
+# DSH 0.2 RC2 candidate: 0.7.0-dsh02.1
+
+Target: exact official DSH 0.2.0-rc.2, BetterSidebar 0.24.1-dsh02.1. This candidate is not installed. UI and real browser interaction are not accepted yet.
+
+The native DSH right sidebar now hosts BetterSidebar and third-party tabs. Child documents keep this native column visible and use its public `isExpanded` / `toggleExpanded` controls; the bottom workbench uses BetterSidebar's bottom toggle. The outer model still owns shared width, height, split ratio, and open states. Native tabs remain per-session and per-document; messages do not forward reference or sticker content.
+
+Session selection uses catalog `retainedBy.mainView`; navigation uses public `uiWorkspace.openSession`. A newly added local empty view does not clear a host selection through a private API or create a host session. It shows a choose-session / new-session prompt; the explicit new-session action calls `uiWorkspace.startSession` and follows the host's workspace blank-session reuse policy. Existing window state is retained through focus, add, close and navigation within the loaded page; this plugin does not add refresh persistence.
+
+Validation: 18 isolated protocol, native sidebar and navigation tests; isolated and transport type checks; build; bundle portability. Native layout, scrolling, actual blank-session workflow and combined sticker pagination require the coordinated temporary-host browser gate.
+
+The text below is historical 0.1.5 evidence only, not acceptance of this candidate.
+
+---
+
 > 当前验收：0.7.0-isolated.5 已安装启用到 RC2 副本；当前运行身份与 Maintenance run 均已核验。共享侧栏 15 项真实页面检查通过、页面异常 0；15 项单元和 25 项合成浏览器检查通过。引用和贴纸真实保存仍未验收。
 
 > 上一版安装验收：0.7.0-isolated.3 已安装并启用到 RC2 副本。正式 Launcher 启动完成；未替换网络响应的真实浏览器验证两窗加载、输入草稿独立、选中窗导航、分隔线调宽、对话/思维图并列、弹窗完整及思维图右侧栏展开。引用和贴纸真实保存与完整跳转仍未验收。

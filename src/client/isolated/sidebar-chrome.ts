@@ -1,17 +1,22 @@
 import type { Sidebar } from './contracts.ts'
 import type { SidebarChrome } from './protocol.ts'
 
+export interface NativeSidebar {
+  mounted: {getSnapshot(): string | undefined; subscribe(fn: () => void): () => void}
+  isExpanded(): boolean
+  toggleExpanded(): void
+}
 /** Visibility adapter only: original button callbacks own the sidebar store and all tab content. */
 export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrome, revision: number, sessionId: string | null) => void,
-  doc = document, schedule = requestAnimationFrame, cancel = cancelAnimationFrame) {
+  doc = document, schedule = requestAnimationFrame, cancel = cancelAnimationFrame, native?: NativeSidebar) {
   let desired: SidebarChrome | null = null, revision = -1, active = false, disposed = false, pending = 0
   let baseline: SidebarChrome | null = null, session: string | null | undefined
   let nativeClick = false, awaitingControls = true, focusPending = false
   let userIntent: Partial<Pick<SidebarChrome,'panelOpen'|'bottomOpen'>> | null = null
   const read = () => {
     const snapshot = sidebar.getSnapshot(), state = snapshot.state
-    return state ? {sessionId:snapshot.sessionId ?? null, value:{panelOpen:state.panelOpen, bottomOpen:state.bottomOpen === true,
-      width:state.width, bottomHeight:state.bottomHeight ?? 280}} : null
+    return state ? {sessionId:native?.mounted.getSnapshot() ?? snapshot.sessionId ?? null, value:{panelOpen:native?.isExpanded() ?? state.panelOpen === true, bottomOpen:state.bottomOpen === true,
+      width:state.width ?? 460, bottomHeight:state.bottomHeight ?? 280}} : null
   }
   const enqueue = () => { if (!disposed && !pending) pending = schedule(reconcile) }
   const reconcile = () => {
@@ -25,7 +30,12 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
     const bottomMismatch = current.value.bottomOpen !== desired.bottomOpen
     awaitingControls = rightMismatch || bottomMismatch
     if (!awaitingControls) return
-    const button = rightMismatch ? buttons.at(-1) : buttons.length > 1 ? buttons[0] : undefined
+    if (rightMismatch && native && native.mounted.getSnapshot()) {
+      nativeClick=true
+      try { native.toggleExpanded() } finally { nativeClick=false }
+      enqueue(); return
+    }
+    const button = native ? doc.querySelector<HTMLButtonElement>('[data-dsh-bottom-toggle]') : rightMismatch ? buttons.at(-1) : buttons.length > 1 ? buttons[0] : undefined
     // Controls may mount after the service. A DOM mutation will retry; do not busy-loop on missing controls.
     if (button && button.getAttribute('aria-disabled') !== 'true') {
       nativeClick=true
@@ -50,8 +60,9 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
     if (JSON.stringify(next)!==JSON.stringify(desired)) {desired=next;report(next,revision,current.sessionId)}
   }
   const unlisten = sidebar.subscribeState(changed)
-  const observer = new MutationObserver(() => {if(awaitingControls) enqueue()})
-  observer.observe(doc.body,{childList:true,subtree:true})
+  const unmount = native?.mounted.subscribe(changed)
+  const observer = new MutationObserver(() => {changed();if(awaitingControls) enqueue()})
+  observer.observe(doc.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-rightbar-collapsed']})
   return {
     focus() {
       if(active||focusPending)return
@@ -68,6 +79,6 @@ export function bindSidebarChrome(sidebar: Sidebar, report: (value: SidebarChrom
       }
       if (!same) enqueue()
     },
-    dispose() {disposed=true; unlisten(); observer.disconnect(); cancel(pending)},
+    dispose() {disposed=true; unlisten(); unmount?.(); observer.disconnect(); cancel(pending)},
   }
 }
