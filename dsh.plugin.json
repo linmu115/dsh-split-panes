@@ -1,6 +1,6 @@
 {
   "id": "@dsh-external/dsh-split-panes",
-  "version": "0.7.0-dsh02.5",
+  "version": "0.7.0-dsh02.6",
   "main": "./lib/index.js",
   "client": {
     "main": "./lib/client.js",

@@ -1,7 +1,7 @@
 {
   "name": "@dsh-external/dsh-split-panes",
   "description": "Independent conversation runtimes with shared outer session navigation and the active view BetterSidebar.",
-  "version": "0.7.0-dsh02.5",
+  "version": "0.7.0-dsh02.6",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -66,7 +66,7 @@
     "react": "^18.2.0",
     "@deepseek-ai/dsh-client-ui-workspace": "^0.2.0-rc.2",
     "@deepseek-ai/dsh-client-ui-sidebar-right": "^0.2.0-rc.2",
-    "dsh-better-sidebar": "^0.24.1 || 0.24.1-dsh02.1",
+    "dsh-better-sidebar": "^0.24.1 || 0.24.1-dsh02.1 || 0.24.1-dsh02.2",
     "@deepseek-ai/dsh-client-ui-settings-general": "^0.2.0-rc.2",
     "@deepseek-ai/dsh-client-ui-settings-models": "^0.2.0-rc.2"
   },
