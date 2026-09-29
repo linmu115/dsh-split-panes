@@ -91,3 +91,24 @@ describe('isolated main view protocol', () => {
   })
 
 })
+
+
+it('ignores a stale navigation error and clears only the successful current revision', () => {
+  const sessions = { list: { getSnapshot: () => ({ current: 'a' }), subscribe: () => () => {} }, open: () => {}, clear: () => {}, refresh: async () => {} }
+  let id=0
+  const model=createViewModel('a',()=>String(++id)),shell=createShell(sessions,model)
+  const child={postMessage:vi.fn()} as unknown as Window
+  const first=model.getSnapshot().views[0]!
+  shell.attach(first.id,child)
+  const receive=(body:Parameters<typeof envelope>[1])=>window.dispatchEvent(new MessageEvent('message',{origin:window.location.origin,source:child,data:envelope(first,body)}))
+  receive({type:'ready'});model.navigate('b')
+  receive({type:'error',revision:0,stage:'catalog',message:'old failure'})
+  expect(model.getSnapshot().views[0]!.error).toBeNull()
+  receive({type:'error',revision:1,stage:'open',message:'current failure'})
+  expect(model.getSnapshot().views[0]!.error).not.toBeNull()
+  receive({type:'navigated',revision:0})
+  expect(model.getSnapshot().views[0]!.error).not.toBeNull()
+  receive({type:'navigated',revision:1})
+  expect(model.getSnapshot().views[0]!.error).toBeNull()
+  shell.dispose()
+})

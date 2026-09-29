@@ -15,7 +15,8 @@ export type Notice =
   | { type: 'selection'; revision: number; sessionId: string | null }
   | { type: 'sidebar'; value: SidebarChrome; revision: number; sessionId: string | null }
   | { type: 'manage'; action: 'add' | 'close' | 'focus'; id?: string }
-  | { type: 'error'; message: string }
+  | { type: 'navigated'; revision: number }
+  | { type: 'error'; revision: number; stage: 'catalog' | 'open'; message: string }
 export type Envelope = ViewIdentity & { channel: typeof CHANNEL; body: Command | Notice }
 export function envelope(identity: ViewIdentity, body: Command | Notice): Envelope {
   return { ...identity, channel: CHANNEL, body }

@@ -48,18 +48,23 @@ export function installChild(ctx: ClientContext, identity: ViewIdentity): void {
         || (body.sessionId !== null && typeof body.sessionId !== 'string')) return
       requestedRevision = body.revision
       applying = true
+      let stage: 'catalog' | 'open' = 'catalog'
       try {
         const snapshot = sessions.list.getSnapshot()
         if (snapshot.phase === 'pending' || (body.sessionId && snapshot.byId && !snapshot.byId[body.sessionId])) await sessions.refresh()
         if (disposed || requestedRevision !== body.revision) return
         document.body.toggleAttribute('data-mv-blank', body.sessionId === null)
+        stage = 'open'
         if (body.sessionId !== null) sessions.open(body.sessionId)
         revision = body.revision
         initialized = body.sessionId !== null
         previous = undefined
         document.body.dataset.mvReady = ''
-      } catch {
-        notify({ type: 'error', message: '会话未能打开，可在左侧重新选择。' })
+        notify({ type: 'navigated', revision })
+      } catch (error) {
+        if (disposed || requestedRevision !== body.revision) return
+        console.warn('[dsh-split-panes] view navigation failed', { stage, revision: body.revision, sessionId: body.sessionId, error: error instanceof Error ? error.message : String(error) })
+        notify({ type: 'error', revision: body.revision, stage, message: '会话未能打开，可在左侧重新选择。' })
       } finally {
         if (requestedRevision === body.revision) { applying = false; publish() }
       }

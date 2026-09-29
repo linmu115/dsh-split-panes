@@ -71,7 +71,12 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
         if (body.action === 'focus' && body.id) model.focus(body.id)
         mirror()
         break
-      case 'error': model.patch(view.id, { error: '这个窗口暂时未就绪，请重新选择会话。' }); break
+      case 'navigated':
+        if (body.revision === view.revision) model.patch(view.id, { error: null })
+        break
+      case 'error':
+        if (body.revision === view.revision) model.patch(view.id, { error: '这个窗口暂时未就绪，请重新选择会话。' })
+        break
     }
   }
   const unselect = sessions.list.subscribe(() => {

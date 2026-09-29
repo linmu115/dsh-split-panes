@@ -89,3 +89,8 @@ sidebar-chrome.ts 使用公开 getSnapshot/subscribeState 读取状态，通过�
 ## 0.7.0-dsh02.2 onboarding ownership
 
 The isolated surface lives beside #root, so it must mirror the official root's inert state while a blocking modal owns the app. Child frames are first mounted only when the parent settings.onboarding coordinator reaches our final readiness step (or its selected Session is already nonblank). In child documents, an initial delegate step leaves automatic onboarding to the parent. This uses the public ordered slot contract: it never reads or writes acknowledgement values and never calls another step's completion callback. Explicitly reopened settings steps remain available through the official coordinator. Official settings-general and settings-models are declared client prerequisites so their initial steps register first.
+
+
+## 0.7.0-dsh02.3 navigation receipts
+
+Cold child navigation now reports a revision-tagged success or failure. A stale failure cannot replace the current view status, and successful navigation clears an earlier error. Navigation warnings identify catalog versus open stage and target Session ID; no authentication token or message body is logged. The onboarding ownership behavior of dsh02.2 is retained.
