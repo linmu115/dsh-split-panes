@@ -1,3 +1,5 @@
+import {createShell} from '../src/client/isolated/shell.ts'
+import {createViewModel} from '../src/client/isolated/model.ts'
 import {describe,expect,it,vi} from 'vitest'
 import {adaptSessions,waitForCatalogSession} from '../src/client/isolated/navigation.ts'
 import {bindSidebarChrome} from '../src/client/isolated/sidebar-chrome.ts'
@@ -56,4 +58,61 @@ it('bounds missing target waits and releases cancelled navigation observers',asy
  await expect(task).rejects.toThrow('superseded');expect(listeners.size).toBe(0)
  await expect(waitForCatalogSession(sessions,'gone',new AbortController().signal,10)).rejects.toThrow('catalog')
  expect(listeners.size).toBe(0)
+})
+
+/** Match official retainScope publication + UiWorkspace.replaceMain retain/release order. */
+function nativeSelectionFixture() {
+ let rows: Record<string,{retainedBy: Record<string,number>}>={a:{retainedBy:{mainView:1}},b:{retainedBy:{}}}
+ let selected='a'
+ const listeners=new Set<()=>void>()
+ const emit=()=>{for(const fn of listeners)fn()}
+ const retain=(id:string,source:string,delta:number)=>{
+  rows={...rows,[id]:{retainedBy:{...rows[id]!.retainedBy,[source]:(rows[id]!.retainedBy[source]??0)+delta}}};emit()
+ }
+ const openSession=(id:string)=>{retain(id,'mainView',1);const old=selected;selected=id;retain(old,'mainView',-1)}
+ const catalog={list:{getSnapshot:()=>({phase:'ready',byId:rows}),subscribe:(fn:()=>void)=>{listeners.add(fn);return()=>{listeners.delete(fn)}}},refresh:async()=>{}}
+ const sessions=adaptSessions({get:(name:string)=>name==='sessions'?catalog:{openSession}} as unknown as ClientContext)
+ const model=createViewModel('a'),shell=createShell(sessions,model)
+ return {model,shell,openSession,emit,retain,listeners,current:()=>selected}
+}
+it('fills the active empty view on an official same-A reopen without changing window one',()=>{
+ const f=nativeSelectionFixture();f.shell.add()
+ const blank=f.model.getSnapshot().views[1]!
+ expect(f.model.getSnapshot().active).toBe(blank.id)
+ expect(blank.sessionId).toBeNull()
+ f.openSession('a')
+ expect(f.model.getSnapshot().views.map(v=>v.sessionId)).toEqual(['a','a'])
+ expect(f.model.getSnapshot().views[1]!.revision).toBe(1)
+ f.openSession('a') // Once assigned, a repeated retain must not restart the child.
+ expect(f.model.getSnapshot().views[1]!.revision).toBe(1)
+ f.shell.dispose()
+})
+it('leaves active blank manager empty for catalog refresh and non-mainView retains',()=>{
+ const f=nativeSelectionFixture();f.shell.add()
+ const blankId=f.model.getSnapshot().active
+ f.emit();f.retain('a','sideView',1);f.retain('a','sideView',-1)
+ expect(f.model.getSnapshot().active).toBe(blankId)
+ expect(f.model.getSnapshot().views.map(v=>v.sessionId)).toEqual(['a',null])
+ expect(f.model.getSnapshot().views[1]!.revision).toBe(0)
+ f.shell.dispose();expect(f.listeners.size).toBe(0)
+ f.openSession('a');expect(f.model.getSnapshot().views[1]!.sessionId).toBeNull()
+})
+it('different B selection preserves A and close maps the survivor back to the host',()=>{
+ const f=nativeSelectionFixture();f.shell.add();f.openSession('b')
+ expect(f.model.getSnapshot().views.map(v=>v.sessionId)).toEqual(['a','b'])
+ f.shell.close(f.model.getSnapshot().active)
+ expect(f.model.getSnapshot().views.map(v=>v.sessionId)).toEqual(['a'])
+ expect(f.current()).toBe('a')
+ f.shell.dispose()
+})
+it('focus mirroring to A never consumes an inactive blank view; closing blank preserves A',()=>{
+ const f=nativeSelectionFixture();const first=f.model.getSnapshot().active
+ f.shell.add();const blank=f.model.getSnapshot().active
+ f.shell.focus(first);f.openSession('a')
+ expect(f.model.getSnapshot().views.map(v=>v.sessionId)).toEqual(['a',null])
+ f.shell.focus(blank);expect(f.model.getSnapshot().views[1]!.sessionId).toBeNull()
+ f.shell.close(blank)
+ expect(f.model.getSnapshot().active).toBe(first)
+ expect(f.current()).toBe('a')
+ f.shell.dispose()
 })

@@ -7,6 +7,7 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
   const frames = new Map<string, Window>()
   const sent = new Map<string, number>()
   let mirroring = false, lastSelection = sessions.list.getSnapshot().current ?? null
+  let previousCatalog = sessions.list.getSnapshot()
   let mirrorGeneration = 0, disposed = false
   const mirror = () => {
     const generation = ++mirrorGeneration
@@ -80,8 +81,19 @@ export function createShell(sessions: Sessions, model: ViewModel, host = window)
     }
   }
   const unselect = sessions.list.subscribe(() => {
-    const selected = sessions.list.getSnapshot().current ?? null
-    if (mirroring || selected === lastSelection) return
+    const snapshot = sessions.list.getSnapshot()
+    const selected = snapshot.current ?? null
+    // Official 0.2 openSession retains the new mainView before releasing the old
+    // reference. Reopening the same session therefore publishes a count increase
+    // even though its selected identity never changes. Only an empty active view
+    // consumes that signal; title/stream updates must not fill a blank view.
+    const retainedAgain = selected !== null && selected === lastSelection
+      && (previousCatalog.byId?.[selected]?.retainedBy?.mainView ?? 0) > 0
+      && (snapshot.byId?.[selected]?.retainedBy?.mainView ?? 0)
+        > (previousCatalog.byId?.[selected]?.retainedBy?.mainView ?? 0)
+    previousCatalog = snapshot
+    const active = model.getSnapshot().views.find(view => view.id === model.getSnapshot().active)
+    if (mirroring || (selected === lastSelection && !(retainedAgain && active?.sessionId === null))) return
     ++mirrorGeneration
     lastSelection = selected
     model.navigate(selected)

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 /** Structural public service faces; no value import from other DSH plugins. */
 export interface Sessions {
-  list: { getSnapshot(): { current?: string; phase?: string; byId?: Record<string, { displayTitle?: string }> }; subscribe(fn: () => void): () => void }
+  list: { getSnapshot(): { current?: string; phase?: string; byId?: Record<string, { displayTitle?: string; retainedBy?: Readonly<Partial<Record<string, number>>> }> }; subscribe(fn: () => void): () => void }
   open(id: string): void
   clear(): void
   refresh(): Promise<void>
