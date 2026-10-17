@@ -2,6 +2,9 @@ import { IncomingMessage } from "node:http";
 import { Duplex } from "node:stream";
 //#region src/index.d.ts
 interface HostContext {
+  connection: {
+    requestRejection(req: IncomingMessage): 401 | 403 | undefined;
+  };
   webServer: {
     registerUpgrade(route: {
       path: string;
