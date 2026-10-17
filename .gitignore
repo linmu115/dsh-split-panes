@@ -22,3 +22,6 @@ node_modules/
 !.dev/transport-browser.mjs
 !.dev/isolated-browser.mjs
 docs/project/views/
+
+# Local link to the built DSH checkout.
+.dsh-host/
